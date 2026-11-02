@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageMetadata from "@/components/PageMetadata";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { Outlet, useLocation } from "react-router-dom";
 
@@ -9,6 +10,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <PageMetadata />
       <Navbar />
       <main className={`flex-1 ${isGraphRoute ? "min-h-0 overflow-hidden" : ""}`}>
         <Outlet />

@@ -5,6 +5,8 @@ import {
   Download,
   Instagram,
   MessageCircle,
+  Music2,
+  Share2,
   Sparkles,
   Twitter,
 } from "lucide-react";
@@ -23,17 +25,28 @@ function normalizeText(text: string) {
 
 function truncateText(text: string, maxLength: number) {
   if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength - 1).trimEnd()}...`;
+  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
 }
 
 function slugifyFilename(text: string) {
   return (
     text
       .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
-      .slice(0, 60) || "story"
+      .slice(0, 60) || "bangunai-story"
   );
+}
+
+function getCleanShareUrl() {
+  if (typeof window === "undefined") return "";
+  const url = new URL(window.location.href);
+  url.search = "";
+  url.hash = "";
+  if (url.pathname !== "/") url.pathname = url.pathname.replace(/\/+$/, "");
+  return url.toString();
 }
 
 function copyWithFallback(text: string) {
@@ -52,7 +65,7 @@ function copyWithFallback(text: string) {
       const ok = document.execCommand("copy");
       document.body.removeChild(input);
       if (ok) resolve();
-      else reject(new Error("Clipboard not available"));
+      else reject(new Error("Clipboard tidak tersedia"));
     } catch (error) {
       reject(error);
     }
@@ -78,97 +91,120 @@ function drawWrappedText(
       current = candidate;
       continue;
     }
-
     lines.push(current);
     current = word;
   }
-
   if (current) lines.push(current);
 
   if (lines.length > maxLines) {
     const visible = lines.slice(0, maxLines);
     let last = visible[maxLines - 1];
-    while (last.length > 1 && ctx.measureText(`${last}...`).width > maxWidth) {
+    while (last.length > 1 && ctx.measureText(`${last}…`).width > maxWidth) {
       last = last.slice(0, -1);
     }
-    visible[maxLines - 1] = `${last.trimEnd()}...`;
+    visible[maxLines - 1] = `${last.trimEnd()}…`;
     lines.splice(0, lines.length, ...visible);
   }
 
-  lines.forEach((line, idx) => {
-    ctx.fillText(line, x, y + idx * lineHeight);
-  });
-
+  lines.forEach((line, index) => ctx.fillText(line, x, y + index * lineHeight));
   return y + lines.length * lineHeight;
 }
 
-async function makeStoryImage(
-  title: string,
-  summary: string,
-  badge: string,
-  displayUrl: string,
-) {
+async function makeStoryImage(title: string, summary: string, badge: string) {
+  if (typeof document !== "undefined" && document.fonts?.ready) {
+    await document.fonts.ready;
+  }
+
   const canvas = document.createElement("canvas");
   canvas.width = 1080;
   canvas.height = 1920;
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
-  const baseGradient = ctx.createLinearGradient(0, 0, 1080, 1920);
-  baseGradient.addColorStop(0, "#121a2e");
-  baseGradient.addColorStop(0.52, "#1f2340");
-  baseGradient.addColorStop(1, "#19132b");
+  const background = ctx.createLinearGradient(0, 0, 1080, 1920);
+  background.addColorStop(0, "#101b30");
+  background.addColorStop(0.55, "#20233b");
+  background.addColorStop(1, "#151525");
+  ctx.fillStyle = background;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = baseGradient;
-  ctx.fillRect(0, 0, 1080, 1920);
+  const glowTop = ctx.createRadialGradient(900, 160, 20, 900, 160, 480);
+  glowTop.addColorStop(0, "rgba(226, 176, 102, 0.28)");
+  glowTop.addColorStop(1, "rgba(226, 176, 102, 0)");
+  ctx.fillStyle = glowTop;
+  ctx.fillRect(380, 0, 700, 650);
 
-  ctx.fillStyle = "rgba(251, 191, 36, 0.17)";
-  ctx.beginPath();
-  ctx.arc(910, 160, 260, 0, Math.PI * 2);
-  ctx.fill();
+  const glowBottom = ctx.createRadialGradient(80, 1780, 20, 80, 1780, 500);
+  glowBottom.addColorStop(0, "rgba(88, 148, 187, 0.22)");
+  glowBottom.addColorStop(1, "rgba(88, 148, 187, 0)");
+  ctx.fillStyle = glowBottom;
+  ctx.fillRect(0, 1320, 650, 600);
 
-  ctx.fillStyle = "rgba(56, 189, 248, 0.14)";
-  ctx.beginPath();
-  ctx.arc(160, 1700, 320, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.strokeStyle = "rgba(255, 248, 235, 0.045)";
+  ctx.lineWidth = 1;
+  for (let x = 72; x <= 1008; x += 72) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, 1920);
+    ctx.stroke();
+  }
+
+  ctx.fillStyle = "#f8e7c8";
+  ctx.font = "700 29px 'Space Grotesk', sans-serif";
+  ctx.fillText("BANGUNAI", 72, 120);
+  ctx.fillStyle = "rgba(255, 248, 235, 0.58)";
+  ctx.font = "500 24px 'Inter', sans-serif";
+  ctx.fillText("TAMAN DIGITAL", 72, 160);
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-  ctx.fillRect(72, 120, 280, 58);
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(72, 120, 280, 58);
+  ctx.fillRect(72, 230, 330, 60);
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
+  ctx.strokeRect(72, 230, 330, 60);
+  ctx.fillStyle = "#f4c98a";
+  ctx.font = "600 25px 'Space Grotesk', sans-serif";
+  ctx.fillText(normalizeText(badge).toLocaleUpperCase("id-ID"), 96, 269);
 
-  ctx.fillStyle = "#ffddb2";
-  ctx.font = "600 30px 'Space Grotesk', sans-serif";
-  ctx.fillText(badge.toUpperCase(), 96, 158);
-
+  const safeTitle = normalizeText(title);
+  const titleFont = Math.max(48, Math.min(76, Math.round(6100 / Math.max(safeTitle.length, 70))));
   ctx.fillStyle = "#fff8eb";
-  ctx.font = "700 74px 'Space Grotesk', sans-serif";
-  const titleEndY = drawWrappedText(ctx, title, 72, 330, 936, 92, 7);
+  ctx.font = `700 ${titleFont}px 'Space Grotesk', sans-serif`;
+  const titleEndY = drawWrappedText(ctx, safeTitle, 72, 410, 936, titleFont * 1.22, 7);
 
-  const summaryText = summary || "Bacaan singkat yang wajib kamu cek.";
-  ctx.fillStyle = "rgba(255, 248, 235, 0.88)";
-  ctx.font = "500 40px 'Source Serif 4', serif";
-  drawWrappedText(ctx, summaryText, 72, titleEndY + 62, 936, 58, 5);
+  const summaryText = summary || "Satu gagasan untuk dibaca pelan dan dipikirkan lebih jauh.";
+  ctx.fillStyle = "rgba(255, 248, 235, 0.82)";
+  ctx.font = "500 38px 'Source Serif 4', serif";
+  drawWrappedText(ctx, summaryText, 72, Math.min(titleEndY + 54, 1270), 900, 54, 4);
 
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = "rgba(255, 248, 235, 0.28)";
   ctx.beginPath();
-  ctx.moveTo(72, 1660);
-  ctx.lineTo(1008, 1660);
+  ctx.moveTo(72, 1608);
+  ctx.lineTo(1008, 1608);
   ctx.stroke();
 
-  ctx.fillStyle = "rgba(255, 248, 235, 0.8)";
-  ctx.font = "500 34px 'Inter', sans-serif";
-  drawWrappedText(ctx, displayUrl, 72, 1734, 936, 46, 2);
-
-  ctx.fillStyle = "rgba(255, 248, 235, 0.6)";
-  ctx.font = "500 28px 'Inter', sans-serif";
-  ctx.fillText("Upload ke IG Story lalu tempel link di sticker", 72, 1848);
+  ctx.fillStyle = "rgba(255, 248, 235, 0.62)";
+  ctx.font = "600 24px 'Inter', sans-serif";
+  ctx.fillText("BACA SELENGKAPNYA DI", 72, 1680);
+  ctx.fillStyle = "#fff8eb";
+  ctx.font = "700 36px 'Space Grotesk', sans-serif";
+  ctx.fillText("blog.bangundwir.my.id", 72, 1740);
+  ctx.fillStyle = "rgba(255, 248, 235, 0.67)";
+  ctx.font = "500 25px 'Inter', sans-serif";
+  ctx.fillText("Instagram: tambahkan Link Sticker · TikTok: cek tautan profil", 72, 1822);
 
   return new Promise<Blob | null>((resolve) => {
     canvas.toBlob((blob) => resolve(blob), "image/png", 1);
   });
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }
 
 export default function SharePanel({
@@ -180,50 +216,28 @@ export default function SharePanel({
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedCaption, setCopiedCaption] = useState(false);
   const [isGeneratingStory, setIsGeneratingStory] = useState(false);
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+  const [actionMessage, setActionMessage] = useState("");
+  const shareUrl = getCleanShareUrl();
 
-  const summaryText = useMemo(
-    () => truncateText(normalizeText(summary), 200),
-    [summary],
+  const summaryText = useMemo(() => truncateText(normalizeText(summary), 200), [summary]);
+  const captionText = useMemo(
+    () => [title, summaryText, shareUrl, "#BangunAI #TamanDigital"].filter(Boolean).join("\n\n"),
+    [title, summaryText, shareUrl],
   );
-
-  const captionText = useMemo(() => {
-    const parts = [title];
-    if (summaryText) parts.push(summaryText);
-    if (shareUrl) parts.push(shareUrl);
-    return parts.join("\n\n");
-  }, [title, summaryText, shareUrl]);
-
-  const whatsappText = useMemo(() => {
-    const parts = [`${title}`];
-    if (summaryText) parts.push(summaryText);
-    if (shareUrl) parts.push(shareUrl);
-    return parts.join("\n\n");
-  }, [title, summaryText, shareUrl]);
-
-  const xText = useMemo(() => {
-    const base = summaryText ? `${title} — ${summaryText}` : title;
-    return truncateText(base, 220);
-  }, [title, summaryText]);
-
-  const displayUrl = useMemo(() => {
-    if (!shareUrl) return "";
-    try {
-      const parsed = new URL(shareUrl);
-      return `${parsed.host}${parsed.pathname}`;
-    } catch {
-      return shareUrl;
-    }
-  }, [shareUrl]);
+  const whatsappText = useMemo(
+    () => [title, summaryText, shareUrl].filter(Boolean).join("\n\n"),
+    [title, summaryText, shareUrl],
+  );
 
   const handleCopyLink = async () => {
     if (!shareUrl) return;
     try {
       await copyWithFallback(shareUrl);
       setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 1800);
+      setActionMessage("Tautan bersih berhasil disalin.");
+      window.setTimeout(() => setCopiedLink(false), 1800);
     } catch {
-      // noop
+      setActionMessage("Tautan tidak dapat disalin otomatis. Salin dari bilah alamat browser.");
     }
   };
 
@@ -232,24 +246,41 @@ export default function SharePanel({
     try {
       await copyWithFallback(captionText);
       setCopiedCaption(true);
-      setTimeout(() => setCopiedCaption(false), 1800);
+      setActionMessage("Caption dan tautan siap ditempel.");
+      window.setTimeout(() => setCopiedCaption(false), 1800);
     } catch {
-      // noop
+      setActionMessage("Caption tidak dapat disalin otomatis pada browser ini.");
     }
   };
 
-  const handleCreateStory = async () => {
+  const handleShareLink = async () => {
+    if (!shareUrl) return;
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title, text: summaryText, url: shareUrl });
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+      }
+    }
+    await handleCopyLink();
+  };
+
+  const makeStoryFile = async () => {
+    const blob = await makeStoryImage(title, summaryText, badge);
+    if (!blob) throw new Error("Canvas tidak tersedia");
+    return new File([blob], `${slugifyFilename(title)}-bangunai-story.png`, { type: "image/png" });
+  };
+
+  const handleShareStory = async (downloadOnly = false) => {
     if (!title || !shareUrl || isGeneratingStory) return;
     setIsGeneratingStory(true);
+    setActionMessage("");
 
     try {
-      const storyBlob = await makeStoryImage(title, summaryText, badge, displayUrl);
-      if (!storyBlob) return;
-
-      const filename = `${slugifyFilename(title)}-story.png`;
-      const storyFile = new File([storyBlob], filename, { type: "image/png" });
-
+      const storyFile = await makeStoryFile();
       if (
+        !downloadOnly &&
         typeof navigator !== "undefined" &&
         typeof navigator.share === "function" &&
         typeof navigator.canShare === "function" &&
@@ -258,40 +289,37 @@ export default function SharePanel({
         try {
           await navigator.share({
             files: [storyFile],
-            title: `${title} - Story`,
+            title: `${title} — BangunAI`,
             text: shareUrl,
           });
+          setActionMessage("Pilih Instagram atau TikTok jika tersedia di menu berbagi perangkat.");
           return;
         } catch (error) {
           if (error instanceof DOMException && error.name === "AbortError") return;
         }
       }
 
-      const objectUrl = URL.createObjectURL(storyBlob);
-      const link = document.createElement("a");
-      link.href = objectUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(objectUrl);
+      downloadBlob(storyFile, storyFile.name);
+      setActionMessage("Kartu Story 9:16 diunduh. Unggah ke Instagram Story atau TikTok, lalu tambahkan tautan sesuai fitur aplikasinya.");
+    } catch {
+      setActionMessage("Kartu Story tidak dapat dibuat di browser ini. Coba buka halaman lewat browser ponsel terbaru.");
     } finally {
       setIsGeneratingStory(false);
     }
   };
 
   const buttonClass =
-    "inline-flex items-center justify-center gap-2 rounded-xl border border-border/50 bg-secondary/35 px-3 py-2.5 text-xs font-medium text-foreground/90 transition-colors hover:bg-secondary/60";
+    "inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-border/50 bg-secondary/35 px-3 py-2.5 text-xs font-medium text-foreground/90 transition-colors hover:bg-secondary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent";
 
   return (
     <div className={cn("max-w-[68ch] w-full mx-auto mt-10 pt-8 border-t border-border/40", className)}>
       <div className="rounded-2xl border border-border/45 bg-card/35 p-4 sm:p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm font-medium text-foreground/95">Bagikan Tulisan</p>
-          <p className="text-[11px] text-muted-foreground/75">WhatsApp • X • Instagram Story</p>
+          <p className="text-sm font-medium text-foreground/95">Bagikan bacaan ini</p>
+          <p className="text-[11px] text-muted-foreground/75">Link rapi · caption · kartu Story</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
           <a
             href={`https://wa.me/?text=${encodeURIComponent(whatsappText)}`}
             target="_blank"
@@ -299,52 +327,54 @@ export default function SharePanel({
             className={buttonClass}
             aria-label="Bagikan ke WhatsApp"
           >
-            <MessageCircle size={14} />
-            WhatsApp
+            <MessageCircle size={14} aria-hidden="true" /> WhatsApp
           </a>
-
           <a
-            href={`https://x.com/intent/tweet?text=${encodeURIComponent(xText)}&url=${encodeURIComponent(shareUrl)}`}
+            href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className={buttonClass}
             aria-label="Bagikan ke X"
           >
-            <Twitter size={14} />
-            X.com
+            <Twitter size={14} aria-hidden="true" /> X
           </a>
-
-          <button onClick={handleCopyCaption} className={buttonClass} aria-label="Salin caption">
-            {copiedCaption ? <Check size={14} className="text-green-400" /> : <Instagram size={14} />}
-            {copiedCaption ? "Tersalin" : "Caption IG"}
+          <button onClick={handleShareLink} className={buttonClass} aria-label="Bagikan tautan lewat menu perangkat">
+            <Share2 size={14} aria-hidden="true" /> Bagikan link
           </button>
-
-          <button
-            onClick={handleCopyLink}
-            className={buttonClass}
-            aria-label="Salin link"
-          >
+          <button onClick={handleCopyCaption} className={buttonClass} aria-label="Salin caption Instagram atau TikTok">
+            {copiedCaption ? <Check size={14} className="text-green-400" /> : <Instagram size={14} />}
+            {copiedCaption ? "Tersalin" : "Caption IG/TikTok"}
+          </button>
+          <button onClick={handleCopyLink} className={buttonClass} aria-label="Salin link bacaan">
             {copiedLink ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
-            {copiedLink ? "Tersalin" : "Copy Link"}
+            {copiedLink ? "Tersalin" : "Copy link"}
           </button>
         </div>
 
-        <button
-          onClick={handleCreateStory}
-          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-accent/35 bg-accent/12 px-3 py-2.5 text-xs font-medium text-accent transition-colors hover:bg-accent/20"
-          aria-label="Buat story Instagram"
-        >
-          {isGeneratingStory ? <Sparkles size={14} className="animate-pulse" /> : <Download size={14} />}
-          {isGeneratingStory ? "Membuat Story..." : "Buat Story (1080x1920)"}
-        </button>
+        <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto]">
+          <button
+            onClick={() => void handleShareStory()}
+            disabled={isGeneratingStory}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-accent/35 bg-accent/12 px-3 py-2.5 text-xs font-semibold text-accent transition-colors hover:bg-accent/20 disabled:cursor-wait disabled:opacity-70"
+            aria-label="Bagikan kartu Story Instagram atau TikTok"
+          >
+            {isGeneratingStory ? <Sparkles size={14} className="animate-pulse" /> : <><Instagram size={14} /><Music2 size={14} /></>}
+            {isGeneratingStory ? "Menyiapkan kartu…" : "Bagikan kartu Story IG / TikTok"}
+          </button>
+          <button
+            onClick={() => void handleShareStory(true)}
+            disabled={isGeneratingStory}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border/50 bg-secondary/35 px-3 py-2.5 text-xs font-medium text-foreground/90 transition-colors hover:bg-secondary/60 disabled:cursor-wait disabled:opacity-70"
+            aria-label="Unduh kartu Story vertikal 9 banding 16"
+          >
+            <Download size={14} aria-hidden="true" /> Unduh 9:16
+          </button>
+        </div>
 
         <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground/75">
-          Tombol Story akan membuat gambar 9:16 siap upload ke Instagram. Setelah upload, tempel link dari tombol
-          <span className="px-1">Copy Link</span>
-          atau caption dari
-          <span className="px-1">Caption IG</span>
-          .
+          Di ponsel, tombol utama membuka menu berbagi bila didukung—pilih Instagram atau TikTok jika tersedia. Jika tidak, kartu 1080×1920 akan diunduh; tambahkan Link Sticker di IG atau tautan profil di TikTok jika fitur itu tersedia.
         </p>
+        {actionMessage && <p className="mt-2 text-xs text-accent" role="status" aria-live="polite">{actionMessage}</p>}
       </div>
     </div>
   );

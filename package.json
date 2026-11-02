@@ -9,6 +9,7 @@
     "content:generate": "node scripts/generate-content-index.mjs",
     "prebuild": "node scripts/generate-content-index.mjs",
     "build": "vite build",
+    "postbuild": "node scripts/generate-social-pages.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",

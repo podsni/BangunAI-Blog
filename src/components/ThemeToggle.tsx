@@ -20,31 +20,29 @@ export default function ThemeToggle() {
   }, [theme]);
 
   const toggle = () => setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  const nextTheme = theme === "dark" ? "terang" : "gelap";
 
   return (
     <button
       onClick={toggle}
-      className="relative p-1.5 rounded-lg text-muted-foreground/70 hover:text-foreground hover:bg-secondary/50 transition-all duration-300 group"
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      className="site-theme-toggle"
+      aria-label={`Ganti ke mode ${nextTheme}`}
+      title={`Ganti ke mode ${nextTheme}`}
     >
-      <div className="relative w-4 h-4 overflow-hidden">
+      <span className="relative block h-4 w-4 overflow-hidden" aria-hidden="true">
         <Sun
           size={16}
           className={`absolute inset-0 transition-all duration-500 ease-out ${
-            theme === "light"
-              ? "rotate-0 scale-100 opacity-100"
-              : "rotate-90 scale-0 opacity-0"
+            theme === "light" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"
           }`}
         />
         <Moon
           size={16}
           className={`absolute inset-0 transition-all duration-500 ease-out ${
-            theme === "dark"
-              ? "rotate-0 scale-100 opacity-100"
-              : "-rotate-90 scale-0 opacity-0"
+            theme === "dark" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"
           }`}
         />
-      </div>
+      </span>
     </button>
   );
 }

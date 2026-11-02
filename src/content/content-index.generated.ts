@@ -1299,6 +1299,27 @@ export const articleMeta = [
     "readingTime": 125
   },
   {
+    "path": "./articles/analisis-perang-iran-2026-dampak-ekonomi-indonesia.mdx",
+    "slug": "analisis-perang-iran-2026-dampak-ekonomi-indonesia",
+    "title": "Analisis Mendalam Perang Iran 2026: Eskalasi Geopolitik, Guncangan Energi Global, dan Dampaknya bagi Ekonomi Indonesia",
+    "summary": "Uraian komprehensif tentang perang Iran 2026: dari anatomi konflik AS-Israel versus Iran, risiko blokade Selat Hormuz, skenario eskalasi 2–4 minggu, hingga transmisi krisis terhadap rupiah, inflasi, APBN, industri, dan diplomasi Indonesia.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "iran-2026",
+      "geopolitik",
+      "selat-hormuz",
+      "ekonomi-indonesia",
+      "energi-global",
+      "inflasi",
+      "rupiah",
+      "apbn",
+      "diplomasi"
+    ],
+    "date": "2026-03-23T06:20:00",
+    "readingTime": 41
+  },
+  {
     "path": "./articles/animal-farm-george-orwell-analisis-mendalam-alegori-politik-totalitarisme.mdx",
     "slug": "animal-farm-george-orwell-analisis-mendalam-alegori-politik-totalitarisme",
     "title": "Animal Farm — Analisis Mendalam: Alegori Politik, Totalitarisme, dan Korupsi Kekuasaan dalam Mahakarya George Orwell",
@@ -1364,6 +1385,89 @@ export const articleMeta = [
     "readingTime": 74
   },
   {
+    "path": "./articles/asymmetric-warfare-strategi-hukum-etika-dan-narasi-dalam-perang-modern.mdx",
+    "slug": "asymmetric-warfare-strategi-hukum-etika-dan-narasi-dalam-perang-modern",
+    "title": "Asymmetric Warfare: Strategi, Hukum, Etika, dan Narasi dalam Perang Modern",
+    "summary": "Uraian mendalam tentang asymmetric warfare atau perang asimetris berdasarkan sebuah panel simposium akademik: mengapa konsep ini diperdebatkan, bagaimana ia menyentuh strategi militer, hukum perang, etika risiko, perlindungan warga sipil, hingga ancaman ekstrem seperti senjata nuklir.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "asymmetric-warfare",
+      "perang-modern",
+      "hukum-perang",
+      "etika-perang",
+      "strategi-militer",
+      "nuklir",
+      "geopolitik",
+      "filsafat-politik"
+    ],
+    "date": "2026-03-23T07:00:00",
+    "readingTime": 46
+  },
+  {
+    "path": "./articles/bagaimana-cern-membuat-antimateri-dari-persamaan-dirac-misteri-asimetri-alam-semesta-hingga-antiatom-yang-dijatuhkan-untuk-menguji-gravitasi.mdx",
+    "slug": "bagaimana-cern-membuat-antimateri-dari-persamaan-dirac-misteri-asimetri-alam-semesta-hingga-antiatom-yang-dijatuhkan-untuk-menguji-gravitasi",
+    "title": "Bagaimana CERN Membuat Antimateri: Dari Persamaan Dirac, Misteri Asimetri Alam Semesta, hingga Antiatom yang Dijatuhkan untuk Menguji Gravitasi",
+    "summary": "Uraian sangat mendalam tentang bagaimana CERN memproduksi antimateri: mulai dari asal-usul konsep antimateri dalam persamaan Dirac, mengapa alam semesta didominasi materi, bagaimana antiproton dibuat dan diperlambat, cara antihidrogen dibentuk, eksperimen gravitasi seperti ALPHA-g dan GBAR, hingga mengapa seluruh riset ini penting bagi fisika modern.",
+    "type": "article",
+    "category": "Tech",
+    "tags": [
+      "antimateri",
+      "antimatter",
+      "cern",
+      "fisika",
+      "kosmologi",
+      "partikel-elementer",
+      "antihidrogen",
+      "gravitasi",
+      "standard-model",
+      "veritasium"
+    ],
+    "date": "2026-04-10T05:28:00",
+    "readingTime": 58
+  },
+  {
+    "path": "./articles/bagaimana-membuat-orang-menyapa-anda-duluan-tanpa-mengemis-perhatian-neurosains-koneksi-dan-seni-membawa-energi-aman.mdx",
+    "slug": "bagaimana-membuat-orang-menyapa-anda-duluan-tanpa-mengemis-perhatian-neurosains-koneksi-dan-seni-membawa-energi-aman",
+    "title": "Bagaimana Membuat Orang Menyapa Anda Duluan Tanpa Mengemis Perhatian: Neurosains Koneksi dan Seni Membawa Energi Aman",
+    "summary": "Uraian panjang dan mendalam tentang cara agar orang lain lebih mudah mendekati dan mengajak bicara kita: dari kerja amigdala, rasa terancam di ruang sosial, niat versus ekspektasi, keamanan saraf, follow-up question, first impression, proximity effect, memberi peran, hingga seni mengakhiri percakapan saat masih hangat.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "komunikasi",
+      "social-anxiety",
+      "koneksi",
+      "neuroscience",
+      "first-impression",
+      "body-language",
+      "conversation",
+      "psikologi-sosial"
+    ],
+    "date": "2026-03-29T01:35:00",
+    "readingTime": 70
+  },
+  {
+    "path": "./articles/bagaimana-tidak-pernah-kehabisan-bahan-obrolan-verbal-game-storytelling-dan-seni-bermain-dengan-kata.mdx",
+    "slug": "bagaimana-tidak-pernah-kehabisan-bahan-obrolan-verbal-game-storytelling-dan-seni-bermain-dengan-kata",
+    "title": "Bagaimana Tidak Pernah Kehabisan Bahan Obrolan: Verbal Game, Storytelling, dan Seni Bermain dengan Kata",
+    "summary": "Uraian panjang dan mendalam tentang cara agar tidak kehabisan topik obrolan: mulai dari asumsi tanggung jawab percakapan, storytelling yang hidup, humor, banter, flirting, frame, misinterpretation, hingga bagaimana mencintai bahasa membuat seseorang jauh lebih karismatik.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "komunikasi",
+      "storytelling",
+      "verbal-game",
+      "charisma",
+      "humor",
+      "flirting",
+      "bahasa",
+      "conversation",
+      "social-skills"
+    ],
+    "date": "2026-03-29T01:25:00",
+    "readingTime": 68
+  },
+  {
     "path": "./articles/belajar-10x-lebih-cepat-dengan-ai-metode-project-based-feynman-dan-protege-effect.mdx",
     "slug": "belajar-10x-lebih-cepat-dengan-ai-metode-project-based-feynman-dan-protege-effect",
     "title": "Belajar 10x Lebih Cepat dengan AI: Metode Project-Based, Feynman Technique, dan Protege Effect",
@@ -1384,6 +1488,26 @@ export const articleMeta = [
     ],
     "date": "2026-03-11T12:30:00",
     "readingTime": 65
+  },
+  {
+    "path": "./articles/belajar-storytelling-dalam-72-menit-will-storr-karakter-perubahan-dan-mesin-cerita-manusia.mdx",
+    "slug": "belajar-storytelling-dalam-72-menit-will-storr-karakter-perubahan-dan-mesin-cerita-manusia",
+    "title": "Belajar Storytelling dalam 72 Menit: Will Storr, Karakter, Perubahan, dan Mesin Cerita Manusia",
+    "summary": "Uraian panjang dan mendalam tentang gagasan Will Storr mengenai storytelling: mengapa manusia berpikir dalam cerita, mengapa karakter lebih penting daripada plot, apa itu theory of control, bagaimana perubahan memicu drama, mengapa suspense lahir dari ancaman perubahan, serta bagaimana survival, connection, dan status menjadi fondasi semua kisah manusia.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "storytelling",
+      "will-storr",
+      "menulis",
+      "karakter",
+      "narasi",
+      "psikologi",
+      "writing-craft",
+      "cerita"
+    ],
+    "date": "2026-03-30T03:15:00",
+    "readingTime": 88
   },
   {
     "path": "./articles/berserk-kisah-lengkap-guts-griffith-eclipse-dendam-trauma-dan-kejatuhan-manusia.mdx",
@@ -1640,6 +1764,25 @@ export const articleMeta = [
     "readingTime": 45
   },
   {
+    "path": "./articles/critical-thinking-mastery-panduan-berpikir-jernih-di-era-banjir-informasi.mdx",
+    "slug": "critical-thinking-mastery-panduan-berpikir-jernih-di-era-banjir-informasi",
+    "title": "Critical Thinking Mastery — Panduan Berpikir Jernih di Era Banjir Informasi",
+    "summary": "Uraian mendalam tentang critical thinking, bias kognitif, problem solving, pengambilan keputusan, komunikasi, etika, dan ketahanan mental sebagai fondasi hidup yang lebih jernih di era informasi berlimpah.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "critical-thinking",
+      "self-improvement",
+      "bias-kognitif",
+      "decision-making",
+      "komunikasi",
+      "problem-solving",
+      "refleksi"
+    ],
+    "date": "2026-03-23T08:00:00",
+    "readingTime": 52
+  },
+  {
     "path": "./articles/critical-thinking-telah-mati-dan-bagaimana-menghidupkannya-kembali-kejelasan-bias-dan-kerendahan-hati-intelektual.mdx",
     "slug": "critical-thinking-telah-mati-dan-bagaimana-menghidupkannya-kembali-kejelasan-bias-dan-kerendahan-hati-intelektual",
     "title": "Critical Thinking Telah Mati? Cara Menghidupkannya Kembali lewat Kejelasan, Bias, dan Kerendahan Hati Intelektual",
@@ -1659,6 +1802,66 @@ export const articleMeta = [
     ],
     "date": "2026-03-15T04:35:00",
     "readingTime": 135
+  },
+  {
+    "path": "./articles/cs50-for-business-analyzing-algorithms-cara-berpikir-efisien-dalam-bisnis-dan-teknologi.mdx",
+    "slug": "cs50-for-business-analyzing-algorithms-cara-berpikir-efisien-dalam-bisnis-dan-teknologi",
+    "title": "CS50 for Business: Analyzing Algorithms — Cara Berpikir Efisien dalam Bisnis dan Teknologi",
+    "summary": "Pembahasan mendalam tentang analisis algoritma, Big O, best case dan worst case, pencarian, pengurutan, rekursi, serta trade-off waktu dan memori untuk pengambilan keputusan bisnis berbasis teknologi.",
+    "type": "article",
+    "category": "Tech",
+    "tags": [
+      "cs50",
+      "algoritma",
+      "big-o",
+      "bisnis",
+      "searching",
+      "sorting",
+      "recursion",
+      "computer-science"
+    ],
+    "date": "2026-03-23T07:25:00",
+    "readingTime": 49
+  },
+  {
+    "path": "./articles/cs50-for-business-interpreting-information-panduan-praktis-ilmu-komputer-untuk-dunia-nyata.mdx",
+    "slug": "cs50-for-business-interpreting-information-panduan-praktis-ilmu-komputer-untuk-dunia-nyata",
+    "title": "CS50 for Business: Interpreting Information — Panduan Praktis Ilmu Komputer untuk Dunia Nyata",
+    "summary": "Uraian mendalam tentang bagaimana ilmu komputer membantu pebisnis dan profesional non-teknis memahami informasi, biner, abstraksi, algoritma, file digital, dan pengambilan keputusan teknologi dengan lebih cerdas.",
+    "type": "article",
+    "category": "Tech",
+    "tags": [
+      "cs50",
+      "computer-science",
+      "bisnis",
+      "algoritma",
+      "binary",
+      "abstraction",
+      "teknologi",
+      "decision-making"
+    ],
+    "date": "2026-03-23T07:16:00",
+    "readingTime": 44
+  },
+  {
+    "path": "./articles/cultures-of-asymmetry-bagaimana-perang-modern-membentuk-musuh-hukum-dan-subjek.mdx",
+    "slug": "cultures-of-asymmetry-bagaimana-perang-modern-membentuk-musuh-hukum-dan-subjek",
+    "title": "Cultures of Asymmetry: Bagaimana Perang Modern Membentuk Musuh, Hukum, dan Subjek",
+    "summary": "Analisis mendalam atas panel ‘Cultures of Asymmetry’: bagaimana perang asimetris tidak hanya mengubah strategi tempur, tetapi juga membentuk cara kita memahami musuh, hukum, kedaulatan, trauma, narasi Holocaust, ISIS, Al-Qaeda, dan konsep ‘forever war’.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "asymmetric-warfare",
+      "forever-war",
+      "isis",
+      "al-qaeda",
+      "hukum-internasional",
+      "budaya-politik",
+      "narasi-perang",
+      "teori-politik"
+    ],
+    "date": "2026-03-23T07:12:00",
+    "readingTime": 49
   },
   {
     "path": "./articles/demis-hassabis-masa-depan-ai-simulasi-realita-dan-agi.mdx",
@@ -1789,6 +1992,28 @@ export const articleMeta = [
     "readingTime": 46
   },
   {
+    "path": "./articles/empire-of-ai-menguak-gaslighting-global-dan-sisi-gelap-di-balik-tirai-openai.mdx",
+    "slug": "empire-of-ai-menguak-gaslighting-global-dan-sisi-gelap-di-balik-tirai-openai",
+    "title": "Empire of AI: Menguak Gaslighting Global, Eksploitasi Manusia, dan Sisi Gelap di Balik Tirai OpenAI",
+    "summary": "Uraian panjang dan mendalam berdasarkan wawancara Karen Hao tentang wajah gelap industri AI: mitos AGI, manipulasi narasi, konflik kekuasaan di OpenAI, eksploitasi buruh anotasi data, krisis lingkungan, hingga pertanyaan besar tentang siapa yang berhak menentukan masa depan teknologi umat manusia.",
+    "type": "article",
+    "category": "Tech",
+    "tags": [
+      "ai",
+      "openai",
+      "sam-altman",
+      "karen-hao",
+      "etika-ai",
+      "teknologi",
+      "data-annotation",
+      "lingkungan",
+      "agi",
+      "whistleblower"
+    ],
+    "date": "2026-03-27T04:55:00",
+    "readingTime": 63
+  },
+  {
     "path": "./articles/ensiklopedia-ilmuwan-islam-zaman-keemasan-lengkap.mdx",
     "slug": "ensiklopedia-ilmuwan-islam-zaman-keemasan-lengkap",
     "title": "Ensiklopedia Ilmuwan Islam Zaman Keemasan: 30+ Pemikir yang Mengubah Dunia",
@@ -1916,6 +2141,25 @@ export const articleMeta = [
     "readingTime": 80
   },
   {
+    "path": "./articles/freud-ketaksadaran-id-ego-superego-dan-mengapa-psikoanalisis-masih-membayangi-cara-kita-memahami-manusia.mdx",
+    "slug": "freud-ketaksadaran-id-ego-superego-dan-mengapa-psikoanalisis-masih-membayangi-cara-kita-memahami-manusia",
+    "title": "Freud, Ketaksadaran, Id-Ego-Superego, dan Mengapa Psikoanalisis Masih Membayangi Cara Kita Memahami Manusia",
+    "summary": "Uraian panjang dan mendalam tentang Freud sebagai tokoh besar sekaligus kontroversial: gagasan unconscious atau ketaksadaran, konflik id-ego-superego, mekanisme pertahanan diri, mimpi, psikoseksual, histeria, terapi psikoanalisis, kritik falsifiability, hingga mengapa banyak detail Freud ditolak tetapi ide besar tentang proses mental tak sadar tetap memengaruhi psikologi modern.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "freud",
+      "psikoanalisis",
+      "psikologi",
+      "unconscious",
+      "id-ego-superego",
+      "filsafat-pikiran",
+      "mental-health"
+    ],
+    "date": "2026-03-30T03:30:00",
+    "readingTime": 92
+  },
+  {
     "path": "./articles/frontend-tooling-tercepat-untuk-manusia-dan-ai-2026.mdx",
     "slug": "frontend-tooling-tercepat-untuk-manusia-dan-ai-2026",
     "title": "Frontend Tooling Tercepat untuk Manusia & AI di 2026",
@@ -2020,6 +2264,49 @@ export const articleMeta = [
     "readingTime": 55
   },
   {
+    "path": "./articles/harvard-thinking-bagaimana-bercerita-dengan-kuat-seni-menulis-storytelling-dan-keberanian-gagal.mdx",
+    "slug": "harvard-thinking-bagaimana-bercerita-dengan-kuat-seni-menulis-storytelling-dan-keberanian-gagal",
+    "title": "Harvard Thinking: Bagaimana Bercerita dengan Kuat, Menulis dengan Jiwa, dan Berani Gagal",
+    "summary": "Uraian panjang dan mendalam dari diskusi Harvard Thinking tentang seni bercerita: dari bagaimana sebuah cerita lahir, bagaimana karakter hidup, mengapa draf buruk itu penting, bagaimana membaca dengan telinga, sampai mengapa menulis yang menyentuh harus datang dari jiwa dan keberanian untuk gagal.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "writing",
+      "storytelling",
+      "harvard",
+      "creative-writing",
+      "sastra",
+      "menulis",
+      "editing",
+      "karakter",
+      "proses-kreatif"
+    ],
+    "date": "2026-03-29T01:15:00",
+    "readingTime": 64
+  },
+  {
+    "path": "./articles/hawa-buah-khuldi-aurat-diturunkan-ke-bumi-tafsir-lintas-agama.mdx",
+    "slug": "hawa-buah-khuldi-aurat-diturunkan-ke-bumi-tafsir-lintas-agama",
+    "title": "Hawa Diturunkan ke Bumi karena Buah Khuldi? Membaca Al-Qur’an, Tafsir, dan Tradisi Yahudi-Kristen",
+    "summary": "Apakah buah khuldi benar-benar kiasan aurat Hawa? Esai ini membaca ayat-ayat Al-Qur’an dan tafsir klasik, lalu membandingkannya secara hati-hati dengan tradisi Yahudi dan Kristen—seraya memisahkan teks, tafsir, dan folklore.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "hawa",
+      "adam",
+      "buah-khuldi",
+      "tafsir",
+      "al-quran",
+      "alkitab",
+      "genesis",
+      "agama",
+      "perempuan",
+      "kajian-lintas-agama"
+    ],
+    "date": "2026-11-03T00:00:00",
+    "readingTime": 19
+  },
+  {
     "path": "./articles/heart-of-darkness-joseph-conrad-kongo-kurtz-dan-jantung-kegelapan-dalam-manusia-modern.mdx",
     "slug": "heart-of-darkness-joseph-conrad-kongo-kurtz-dan-jantung-kegelapan-dalam-manusia-modern",
     "title": "Heart of Darkness: Joseph Conrad, Kongo, Kurtz, dan Jantung Kegelapan dalam Manusia Modern",
@@ -2081,6 +2368,27 @@ export const articleMeta = [
     ],
     "date": "2026-03-12T16:52:00",
     "readingTime": 75
+  },
+  {
+    "path": "./articles/jensen-huang-nvidia-dari-geforce-cuda-hingga-pabrik-ai-dan-masa-depan-komputasi.mdx",
+    "slug": "jensen-huang-nvidia-dari-geforce-cuda-hingga-pabrik-ai-dan-masa-depan-komputasi",
+    "title": "Jensen Huang, NVIDIA: Dari GeForce, CUDA, hingga Pabrik AI dan Masa Depan Komputasi",
+    "summary": "Uraian panjang dan mendalam tentang cara berpikir Jensen Huang dan transformasi NVIDIA: dari GPU gaming, taruhan CUDA, extreme co-design, AI factory, supply chain, China, open source, pekerjaan masa depan, hingga visi komputasi sebagai mesin produksi ekonomi baru.",
+    "type": "article",
+    "category": "Tech",
+    "tags": [
+      "nvidia",
+      "jensen-huang",
+      "ai",
+      "cuda",
+      "gpu",
+      "data-center",
+      "komputasi",
+      "lex-fridman",
+      "semiconductor"
+    ],
+    "date": "2026-03-24T17:45:00",
+    "readingTime": 56
   },
   {
     "path": "./articles/joe-folley-semua-yang-perlu-anda-tahu-tentang-logika.mdx",
@@ -2251,6 +2559,28 @@ export const articleMeta = [
     ],
     "date": "2026-03-10T05:20:00",
     "readingTime": 65
+  },
+  {
+    "path": "./articles/kenapa-kita-bisa-percaya-hal-hal-ngawur-psikologi-kesimpulan-ngasal-mitos-dan-cara-manusia-mencari-makna.mdx",
+    "slug": "kenapa-kita-bisa-percaya-hal-hal-ngawur-psikologi-kesimpulan-ngasal-mitos-dan-cara-manusia-mencari-makna",
+    "title": "Kenapa Kita Bisa Percaya Hal-hal Ngawur: Psikologi Kesimpulan Ngasal, Mitos, dan Cara Manusia Mencari Makna",
+    "summary": "Uraian panjang dan mendalam tentang mengapa manusia bisa percaya hal-hal yang ngawur: bagaimana otak mengambil kesimpulan, peran abstraksi dan empirisme, beda pengetahuan ilmiah dan non-ilmiah, fungsi coping mechanism, kecerdasan kognitif versus kecerdasan emosi, serta mengapa mitos, narasi, dan keyakinan tetap bertahan bahkan di zaman sains.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "psikologi",
+      "kognisi",
+      "mitos",
+      "sains",
+      "epistemologi",
+      "mental",
+      "kecerdasan",
+      "coping-mechanism",
+      "bias-kognitif",
+      "narasi"
+    ],
+    "date": "2026-04-07T04:59:00",
+    "readingTime": 67
   },
   {
     "path": "./articles/kesepian-hukum-dan-psikologi-jw-freiberg-membaca-kasus-hukum-dengan-empati.mdx",
@@ -2455,6 +2785,47 @@ export const articleMeta = [
     "featured": true
   },
   {
+    "path": "./articles/membedah-dark-psychology-persuasi-identitas-dan-bahaya-manipulasi-di-era-ai.mdx",
+    "slug": "membedah-dark-psychology-persuasi-identitas-dan-bahaya-manipulasi-di-era-ai",
+    "title": "Membedah ‘Dark Psychology’: Persuasi, Identitas, dan Bahaya Manipulasi di Era AI",
+    "summary": "Analisis mendalam atas sebuah wawancara tentang body language, persuasi, micro-compliance, identitas, dan pengaruh sosial. Artikel ini membedah mana yang berguna untuk komunikasi manusia, mana yang manipulatif, dan bagaimana pembaca melindungi diri dari framing, pre-commitment, serta teknik pengaruh di era AI.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "psikologi",
+      "persuasi",
+      "komunikasi",
+      "dark-psychology",
+      "body-language",
+      "ai",
+      "media-literacy",
+      "pengembangan-diri"
+    ],
+    "date": "2026-03-23T07:28:00",
+    "readingTime": 52
+  },
+  {
+    "path": "./articles/membedah-wawancara-political-prophet-perang-iran-dan-geopolitik-dunia.mdx",
+    "slug": "membedah-wawancara-political-prophet-perang-iran-dan-geopolitik-dunia",
+    "title": "Membedah Wawancara ‘Political Prophet’: Perang Iran, Krisis Energi, dan Ramalan Geopolitik yang Perlu Dibaca Secara Kritis",
+    "summary": "Analisis mendalam atas sebuah wawancara geopolitik tentang perang Iran 2026: mana yang berupa analisis strategis, mana yang masih spekulasi, bagaimana klaim-klaim tentang ekonomi global, Israel, AS, China, Jepang, dan Barat harus dibaca dengan hati-hati, serta apa relevansinya bagi pembaca Indonesia.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "iran-2026",
+      "geopolitik",
+      "analisis-media",
+      "propaganda",
+      "energi-global",
+      "selat-hormuz",
+      "amerika-serikat",
+      "israel",
+      "china"
+    ],
+    "date": "2026-03-23T06:45:00",
+    "readingTime": 48
+  },
+  {
     "path": "./articles/memerintah-pikiran-bawah-sadar-panduan-lengkap-metode-joseph-murphy.mdx",
     "slug": "memerintah-pikiran-bawah-sadar-panduan-lengkap-metode-joseph-murphy",
     "title": "Memerintah Pikiran Bawah Sadar: Panduan Lengkap Metode Joseph Murphy untuk Mengubah Hidup dari Dalam",
@@ -2475,6 +2846,48 @@ export const articleMeta = [
     ],
     "date": "2026-03-11T13:30:00",
     "readingTime": 85
+  },
+  {
+    "path": "./articles/mengapa-hukum-yang-buruk-boleh-ditentang-bivitri-susanti-rule-of-law-dan-bahaya-weaponization-of-law.mdx",
+    "slug": "mengapa-hukum-yang-buruk-boleh-ditentang-bivitri-susanti-rule-of-law-dan-bahaya-weaponization-of-law",
+    "title": "Mengapa Hukum yang Buruk Boleh Ditentang: Bivitri Susanti, Rule of Law, dan Bahaya Weaponization of Law",
+    "summary": "Uraian panjang dan mendalam dari percakapan Bivitri Susanti tentang hukum yang dipakai sebagai senjata kekuasaan, legalitas tanpa moralitas, pembodohan struktural, pendidikan kritis, pemidanaan kebijakan, hingga mengapa warga yang baik justru wajib melawan hukum yang kehilangan legitimasi moralnya.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "hukum",
+      "bivitri-susanti",
+      "rule-of-law",
+      "demokrasi",
+      "oligarki",
+      "pendidikan",
+      "aktivisme",
+      "konstitusi",
+      "weaponization-of-law"
+    ],
+    "date": "2026-03-28T15:35:00",
+    "readingTime": 66
+  },
+  {
+    "path": "./articles/mengapa-orang-baik-sering-gagal-menjadi-pemimpin-machiavelli-the-prince-dan-tragedi-moral-kekuasaan.mdx",
+    "slug": "mengapa-orang-baik-sering-gagal-menjadi-pemimpin-machiavelli-the-prince-dan-tragedi-moral-kekuasaan",
+    "title": "Mengapa Orang Baik Sering Gagal Menjadi Pemimpin: Machiavelli, The Prince, dan Tragedi Moral Kekuasaan",
+    "summary": "Uraian panjang dan mendalam tentang gagasan Machiavelli berdasarkan pembahasan The Prince, Discourses, dan kehidupan politiknya: dari tabiat manusia, republik, perang, propaganda, kebajikan, kebrutalan, hingga pertanyaan sulit mengapa orang yang bermoral secara pribadi belum tentu mampu menjadi pemimpin yang baik.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "machiavelli",
+      "the-prince",
+      "filsafat-politik",
+      "kepemimpinan",
+      "republik",
+      "kekuasaan",
+      "etika",
+      "sejarah",
+      "florence"
+    ],
+    "date": "2026-03-27T05:12:00",
+    "readingTime": 60
   },
   {
     "path": "./articles/michael-franzese-vs-20-polisi-mafia-informan-entrapment-korupsi-dan-budaya-takut.mdx",
@@ -2542,6 +2955,26 @@ export const articleMeta = [
     "readingTime": 41
   },
   {
+    "path": "./articles/mossad-sejarah-rahasia-intelijen-israel.mdx",
+    "slug": "mossad-sejarah-rahasia-israel-eichmann-munich-ozirak-stuxnet",
+    "title": "Mossad, Sejarah Rahasia Israel: Dari Eichmann, Munich, Ozirak, hingga Stuxnet",
+    "summary": "Uraian panjang dan mendalam tentang sejarah Mossad berdasarkan dokumenter Mossad, l'histoire secrète d'Israël: dari kelahiran negara Israel, operasi penculikan Adolf Eichmann, pemburuan pasca-Munich, sabotase program nuklir Irak, hingga perang rahasia melawan Iran di era Stuxnet.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "mossad",
+      "israel",
+      "intelijen",
+      "geopolitik",
+      "perang-rahasia",
+      "iran",
+      "irak",
+      "sejarah"
+    ],
+    "date": "2026-03-24T16:10:00",
+    "readingTime": 34
+  },
+  {
     "path": "./articles/negara-hukum-demokrasi-dan-mengapa-indonesia-bisa-tampak-demokratis-tetapi-tetap-rapuh-secara-substantif.mdx",
     "slug": "negara-hukum-demokrasi-dan-mengapa-indonesia-bisa-tampak-demokratis-tetapi-tetap-rapuh-secara-substantif",
     "title": "Negara Hukum, Demokrasi, dan Mengapa Indonesia Bisa Tampak Demokratis tetapi Tetap Rapuh secara Substantif",
@@ -2580,6 +3013,28 @@ export const articleMeta = [
     "date": "2026-03-09T05:44:00",
     "readingTime": 45,
     "featured": true
+  },
+  {
+    "path": "./articles/nikola-tesla-arsitek-dunia-modern-perang-arus-listrik-nirkabel-dan-tragedi-jenius-yang-melampaui-zamannya.mdx",
+    "slug": "nikola-tesla-arsitek-dunia-modern-perang-arus-listrik-nirkabel-dan-tragedi-jenius-yang-melampaui-zamannya",
+    "title": "Nikola Tesla: Arsitek Dunia Modern, Perang Arus, Listrik Nirkabel, dan Tragedi Jenius yang Melampaui Zamannya",
+    "summary": "Uraian panjang dan mendalam tentang Nikola Tesla sebagai jenius listrik modern: masa kecilnya yang traumatis, lahirnya motor induksi dan sistem AC, perang arus melawan Edison, mimpi energi nirkabel global, konflik dengan investor, serta paradoks seorang penemu yang mengubah dunia tetapi gagal memonetisasi visinya.",
+    "type": "article",
+    "category": "Tech",
+    "tags": [
+      "nikola-tesla",
+      "listrik",
+      "alternating-current",
+      "direct-current",
+      "sejarah-sains",
+      "radio",
+      "wireless-power",
+      "perang-arus",
+      "biografi-intelektual",
+      "inovasi"
+    ],
+    "date": "2026-04-04T00:58:00",
+    "readingTime": 62
   },
   {
     "path": "./articles/no-longer-human-osamu-dazai-keterasingan-topeng-sosial-trauma-dan-kehancuran-diri.mdx",
@@ -2753,6 +3208,26 @@ export const articleMeta = [
     "readingTime": 42
   },
   {
+    "path": "./articles/presiden-prabowo-menjawab-part-1-analisis-mendalam-serangan-aktivis-bop-mbg-dan-dampak-perang.mdx",
+    "slug": "presiden-prabowo-menjawab-part-1-analisis-mendalam-serangan-aktivis-bop-mbg-dan-dampak-perang",
+    "title": "Presiden Prabowo Menjawab (Part 1): Analisis Mendalam Serangan Aktivis, BOP, MBG, dan Dampak Perang bagi Indonesia",
+    "summary": "Uraian komprehensif atas dialog Presiden Prabowo di Mata Najwa (Part 1): dari filsafat ketahanan pangan-energi, budaya laporan birokrasi, isu teror terhadap aktivis, tekanan fiskal akibat perang, hingga kalkulasi Board of Peace dan transisi energi nasional.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "politik-indonesia",
+      "geopolitik",
+      "ketahanan-pangan",
+      "ketahanan-energi",
+      "mbg",
+      "board-of-peace",
+      "demokrasi",
+      "ekonomi-makro"
+    ],
+    "date": "2026-03-20T04:20:00",
+    "readingTime": 43
+  },
+  {
     "path": "./articles/pria-perlu-membaca-fiksi-manfaat-novel-untuk-empati-karakter-dan-makna-hidup.mdx",
     "slug": "pria-perlu-membaca-fiksi-manfaat-novel-untuk-empati-karakter-dan-makna-hidup",
     "title": "Pria Perlu Membaca Fiksi: Manfaat Novel untuk Empati, Karakter, dan Makna Hidup",
@@ -2774,6 +3249,28 @@ export const articleMeta = [
     "readingTime": 120
   },
   {
+    "path": "./articles/project-stargate-cia-mata-mata-psikis-remote-viewing-perang-dingin-dan-batas-antara-arsip-klaim-serta-spekulasi-filsafat.mdx",
+    "slug": "project-stargate-cia-mata-mata-psikis-remote-viewing-perang-dingin-dan-batas-antara-arsip-klaim-serta-spekulasi-filsafat",
+    "title": "Project Stargate CIA: Mata-mata Psikis, Remote Viewing, Perang Dingin, dan Batas antara Arsip, Klaim, serta Spekulasi Filsafat",
+    "summary": "Uraian mendalam tentang Project Stargate milik CIA: apa itu remote viewing, bagaimana prosedurnya dijalankan, mengapa program ini muncul pada era Perang Dingin, contoh-contoh hit yang sering dikutip, alasan program dipertahankan selama puluhan tahun, serta analisis kritis tentang perbedaan antara dokumen arsip, klaim paranormal, dan spekulasi metafisika.",
+    "type": "article",
+    "category": "Tech",
+    "tags": [
+      "cia",
+      "stargate",
+      "remote-viewing",
+      "perang-dingin",
+      "intelijen",
+      "parapsikologi",
+      "filsafat",
+      "arsip",
+      "skeptisisme",
+      "metafisika"
+    ],
+    "date": "2026-04-10T05:40:00",
+    "readingTime": 54
+  },
+  {
     "path": "./articles/psikologi-carl-jung-panduan-lengkap-alam-bawah-sadar-arketipe-individuasi.mdx",
     "slug": "psikologi-carl-jung-panduan-lengkap-alam-bawah-sadar-arketipe-individuasi",
     "title": "Psikologi Carl Jung: Panduan Lengkap Alam Bawah Sadar, Arketipe, dan Individuasi",
@@ -2792,6 +3289,43 @@ export const articleMeta = [
     ],
     "date": "2026-03-12T07:11:00",
     "readingTime": 60
+  },
+  {
+    "path": "./articles/psikologi-catur-cermin-jiwa-manusia.mdx",
+    "slug": "psikologi-catur-cermin-jiwa-manusia",
+    "title": "Psikologi Catur: Mengapa Papan 64 Kotak Adalah Cermin Jiwa Manusia",
+    "summary": "Bedah mendalam tentang psikologi di balik setiap langkah catur, mulai dari manajemen emosi, intuisi vs kalkulasi, hingga bagaimana catur menjadi metafora sempurna bagi strategi kehidupan.",
+    "type": "article",
+    "category": "Tech",
+    "tags": [
+      "catur",
+      "psikologi",
+      "strategi",
+      "produktivitas",
+      "mental-model"
+    ],
+    "date": "2026-03-19T11:20:00",
+    "readingTime": 25
+  },
+  {
+    "path": "./articles/psikologi-perilaku-manusia-memahami-pengaruh-emosi-dan-pertahanan-diri-di-era-manipulasi.mdx",
+    "slug": "psikologi-perilaku-manusia-memahami-pengaruh-emosi-dan-pertahanan-diri-di-era-manipulasi",
+    "title": "Psikologi Perilaku Manusia — Memahami Pengaruh, Emosi, dan Pertahanan Diri di Era Manipulasi",
+    "summary": "Analisis mendalam tentang psikologi perilaku manusia, emosi, pengaruh sosial, bias keputusan, bahasa tubuh, tekanan, kebiasaan, dan cara membangun pertahanan diri yang etis di tengah dunia yang penuh persuasi dan manipulasi halus.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "psikologi",
+      "perilaku-manusia",
+      "bias-kognitif",
+      "pengaruh-sosial",
+      "emosi",
+      "komunikasi",
+      "manipulasi",
+      "self-defense"
+    ],
+    "date": "2026-03-23T08:12:00",
+    "readingTime": 56
   },
   {
     "path": "./articles/psikologi-social-engineering-bagaimana-hacker-meretas-otak-manusia.mdx",
@@ -2832,6 +3366,26 @@ export const articleMeta = [
     ],
     "date": "2026-03-14T05:30:00",
     "readingTime": 49
+  },
+  {
+    "path": "./articles/quantum-entanglement-ilusi-waktu-dan-misteri-semakin-tua-menurut-jim-al-khalili.mdx",
+    "slug": "quantum-entanglement-ilusi-waktu-dan-misteri-semakin-tua-menurut-jim-al-khalili",
+    "title": "Quantum Entanglement, Ilusi Waktu, dan Misteri “Makin Tua Makin Cepat” Menurut Jim Al-Khalili",
+    "summary": "Uraian panjang dan mendalam tentang waktu menurut fisika modern berdasarkan wawancara Jim Al-Khalili: dari waktu psikologis, relativitas Einstein, block universe, panah waktu, entropi, kuantum, decoherence, Big Bang, hingga kemungkinan time travel.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "fisika",
+      "waktu",
+      "relativitas",
+      "kuantum",
+      "entropi",
+      "jim-al-khalili",
+      "filsafat-sains",
+      "kosmologi"
+    ],
+    "date": "2026-03-24T17:30:00",
+    "readingTime": 44
   },
   {
     "path": "./articles/rahasia-kelahiran-kejahatan-agama-ibu-politeisme-demiurge-masyarakat-rahasia.mdx",
@@ -3038,6 +3592,28 @@ export const articleMeta = [
     "readingTime": 20
   },
   {
+    "path": "./articles/sejarah-ukraina-rusia-soviet-kgb-nasionalisme-dan-perang-modern-menurut-serhii-plokhy.mdx",
+    "slug": "sejarah-ukraina-rusia-soviet-kgb-nasionalisme-dan-perang-modern-menurut-serhii-plokhy",
+    "title": "Sejarah Ukraina, Rusia, Soviet, KGB, Nasionalisme, dan Perang Modern Menurut Serhii Plokhy",
+    "summary": "Uraian panjang dan mendalam berdasarkan percakapan Serhii Plokhy tentang runtuhnya Uni Soviet, warisan kekaisaran Rusia, peran Ukraina dalam pecahnya Soviet, mitos Bandera, KGB, Holodomor, Chernobyl, NATO, hingga perang Rusia-Ukraina modern.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "ukraina",
+      "rusia",
+      "uni-soviet",
+      "serhii-plokhy",
+      "kgb",
+      "bandara",
+      "holodomor",
+      "chernobyl",
+      "geopolitik",
+      "sejarah"
+    ],
+    "date": "2026-03-24T17:20:00",
+    "readingTime": 48
+  },
+  {
     "path": "./articles/seni-berpikir-sherlock-holmes-maria-konnikova.mdx",
     "slug": "seni-berpikir-sherlock-holmes-maria-konnikova",
     "title": "Seni Berpikir ala Sherlock Holmes: Mindfulness dan Observasi Mendalam bersama Maria Konnikova",
@@ -3076,6 +3652,26 @@ export const articleMeta = [
     ],
     "date": "2026-03-11T03:45:00",
     "readingTime": 65
+  },
+  {
+    "path": "./articles/sigmund-freud-kebenaran-gelap-di-balik-alam-tak-sadar-dan-mengapa-dunia-masih-berbicara-dengan-bahasanya.mdx",
+    "slug": "sigmund-freud-kebenaran-gelap-di-balik-alam-tak-sadar-dan-mengapa-dunia-masih-berbicara-dengan-bahasanya",
+    "title": "Sigmund Freud: Kebenaran Gelap di Balik Alam Tak Sadar dan Mengapa Dunia Masih Berbicara dengan Bahasanya",
+    "summary": "Uraian panjang dan mendalam tentang kehidupan dan paradoks Freud: lahir dari Wina yang penuh represi, membangun psikoanalisis dari histeria, mimpi, represi, dan seksualitas infantil, lalu dikritik keras oleh sains modern namun tetap menang secara budaya karena ia mengajari peradaban modern untuk mencurigai dirinya sendiri.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "freud",
+      "psikoanalisis",
+      "biografi-intelektual",
+      "unconscious",
+      "vienna",
+      "psikologi",
+      "filsafat",
+      "sejarah-ide"
+    ],
+    "date": "2026-03-30T03:45:00",
+    "readingTime": 104
   },
   {
     "path": "./articles/sistem-pendidikan-indonesia-akar-masalah-guru-honorer-dan-peta-solusi-nasional.mdx",
@@ -3118,6 +3714,28 @@ export const articleMeta = [
     ],
     "date": "2026-03-11T16:00:00",
     "readingTime": 75
+  },
+  {
+    "path": "./articles/spionase-informan-dan-musuh-baru-bagaimana-badan-intelijen-modern-bekerja-dan-menyimpang.mdx",
+    "slug": "spionase-informan-dan-musuh-baru-bagaimana-badan-intelijen-modern-bekerja-dan-menyimpang",
+    "title": "Spionase, Informan, dan Musuh Baru: Bagaimana Badan Intelijen Modern Bekerja, Memburu, dan Menyimpang",
+    "summary": "Uraian mendalam tentang badan intelijen modern berdasarkan dokumenter DW: dari perang agen CIA, Rusia, China, dan Iran, program penyiksaan pasca-9/11, pembunuhan terarah, ledakan pengawasan digital, hingga krisis akuntabilitas yang mengancam negara hukum.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "intelijen",
+      "cia",
+      "nsa",
+      "mossad",
+      "rusia",
+      "china",
+      "iran",
+      "pengawasan",
+      "perang-melawan-teror",
+      "geopolitik"
+    ],
+    "date": "2026-03-24T16:40:00",
+    "readingTime": 36
   },
   {
     "path": "./articles/sun-tzu-seni-perang-panduan-lengkap-13-bab-strategi-abadi.mdx",
@@ -3254,6 +3872,25 @@ export const articleMeta = [
     ],
     "date": "2026-03-16T03:40:00",
     "readingTime": 210
+  },
+  {
+    "path": "./articles/the-power-of-not-reacting-seni-mengendalikan-emosi-dan-memilih-respons-yang-lebih-bijak.mdx",
+    "slug": "the-power-of-not-reacting-seni-mengendalikan-emosi-dan-memilih-respons-yang-lebih-bijak",
+    "title": "The Power of Not Reacting — Seni Mengendalikan Emosi dan Memilih Respons yang Lebih Bijak",
+    "summary": "Pembahasan mendalam tentang kekuatan untuk tidak bereaksi impulsif, cara kerja amygdala, jeda antara stimulus dan respons, regulasi emosi, ketahanan mental, dan bagaimana kendali emosi membentuk kualitas hidup jangka panjang.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "emosi",
+      "self-control",
+      "emotional-regulation",
+      "mindset",
+      "resilience",
+      "komunikasi",
+      "refleksi"
+    ],
+    "date": "2026-03-23T08:30:00",
+    "readingTime": 58
   },
   {
     "path": "./articles/the-valley-of-fear-lembah-ketakutan-sherlock-holmes-analisis-mendalam-novel-terakhir-conan-doyle.mdx",
@@ -3415,6 +4052,27 @@ export const articleMeta = [
     "readingTime": 90
   },
   {
+    "path": "./articles/v-for-vendetta-kejahatan-fasisme-teror-negara-dan-dilema-moral-revolusi.mdx",
+    "slug": "v-for-vendetta-kejahatan-fasisme-teror-negara-dan-dilema-moral-revolusi",
+    "title": "V for Vendetta: Kejahatan Fasisme, Teror Negara, dan Dilema Moral Revolusi",
+    "summary": "Uraian panjang dan mendalam tentang V for Vendetta sebagai peringatan terhadap fasisme, propaganda, scapegoating, pengawasan total, kekuasaan terpusat, serta dilema moral V sebagai pahlawan yang juga bergesekan dengan teror, balas dendam, dan kekacauan pasca-revolusi.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "v-for-vendetta",
+      "fasisme",
+      "tirani",
+      "revolusi",
+      "propaganda",
+      "anarki",
+      "politik",
+      "filsafat",
+      "dystopia"
+    ],
+    "date": "2026-03-29T13:40:00",
+    "readingTime": 74
+  },
+  {
     "path": "./articles/vagabond-alur-lengkap-musashi-pertumbuhan-pedang-kesendirian-dan-makna-kemenangan.mdx",
     "slug": "vagabond-alur-lengkap-musashi-pertumbuhan-pedang-kesendirian-dan-makna-kemenangan",
     "title": "Vagabond: Alur Lengkap Musashi, Pertumbuhan Pedang, Kesendirian, dan Makna Kemenangan",
@@ -3454,6 +4112,70 @@ export const articleMeta = [
     "date": "2026-02-21T10:25:00",
     "readingTime": 16,
     "featured": true
+  },
+  {
+    "path": "./articles/vatikan-sejarah-rahasia-dari-fasisme-bank-vatikan-john-paul-ii-hingga-fransiskus.mdx",
+    "slug": "vatikan-sejarah-rahasia-dari-fasisme-bank-vatikan-john-paul-ii-hingga-fransiskus",
+    "title": "Vatikan: Sejarah Rahasia dari Fasisme, Bank Vatikan, John Paul II, hingga Paus Fransiskus",
+    "summary": "Uraian panjang dan mendalam tentang sejarah rahasia Vatikan sebagai Gereja sekaligus negara: dari perjanjian dengan Mussolini, sikap ambigu terhadap Nazisme, Konsili Vatikan II, skandal Bank Vatikan, perang melawan komunisme, hingga upaya reformasi Paus Benediktus XVI dan Paus Fransiskus.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "vatikan",
+      "paus",
+      "gereja-katolik",
+      "sejarah-gereja",
+      "bank-vatikan",
+      "fascism",
+      "nazisme",
+      "john-paul-ii",
+      "francis"
+    ],
+    "date": "2026-03-24T17:05:00",
+    "readingTime": 40
+  },
+  {
+    "path": "./articles/viking-ragnar-berserker-valhalla-dan-zaman-penakluk-laut-utara-bagaimana-bangsa-nordik-mengubah-wajah-eropa.mdx",
+    "slug": "viking-ragnar-berserker-valhalla-dan-zaman-penakluk-laut-utara-bagaimana-bangsa-nordik-mengubah-wajah-eropa",
+    "title": "Viking, Ragnar, Berserker, Valhalla, dan Zaman Penakluk Laut Utara: Bagaimana Bangsa Nordik Mengubah Wajah Eropa",
+    "summary": "Uraian sangat mendalam tentang bangsa Viking: serangan Lindisfarne, teror psikologis yang mereka tebarkan, keunggulan longship, tokoh Ragnar Lothbrok, Great Heathen Army, transisi dari perampok menjadi pembangun negara, ekspansi ke Inggris, Normandia, Vinland, Rus, hingga peran mereka dalam membentuk Eropa abad pertengahan.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "viking",
+      "ragnar-lothbrok",
+      "valhalla",
+      "berserker",
+      "sejarah",
+      "abad-pertengahan",
+      "norman",
+      "byzantium",
+      "leif-erikson",
+      "lindisfarne"
+    ],
+    "date": "2026-04-10T05:47:00",
+    "readingTime": 66
+  },
+  {
+    "path": "./articles/vladimir-putin-rahasia-kenaikan-kekuasaan-dari-kgb-ke-kremlin-dan-proyek-restorasi-rusia.mdx",
+    "slug": "vladimir-putin-rahasia-kenaikan-kekuasaan-dari-kgb-ke-kremlin-dan-proyek-restorasi-rusia",
+    "title": "Vladimir Putin: Rahasia Kenaikan Kekuasaan dari KGB ke Kremlin dan Proyek Restorasi Rusia",
+    "summary": "Uraian panjang dan mendalam tentang naiknya Vladimir Putin dari aparat KGB level menengah menjadi penguasa Kremlin: masa kecil di Leningrad, trauma Soviet, jaringan patronase, perang Chechnya, penghancuran media independen, penjinakan oligarki, hingga kembalinya Rusia sebagai kekuatan revisionis global.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "vladimir-putin",
+      "rusia",
+      "kgb",
+      "kremlin",
+      "oligarki",
+      "geopolitik",
+      "ukraina",
+      "suriah",
+      "sejarah-politik"
+    ],
+    "date": "2026-03-24T16:50:00",
+    "readingTime": 38
   },
   {
     "path": "./articles/walter-isaacson-elon-musk-dan-7-rahasia-intensitas-misi-dan-harga-yang-harus-dibayar-untuk-mengubah-dunia.mdx",
@@ -3751,7 +4473,7 @@ export const dailyMeta = [
   },
   {
     "path": "./daily/2026-03-06.mdx",
-    "slug": "Fri Mar 06 2026 07:00:00 GMT+0700 (Indochina Time)",
+    "slug": "Fri Mar 06 2026 07:00:00 GMT+0700 (Western Indonesia Time)",
     "title": "Daily Note: 6 Maret 2026",
     "date": "2026-03-06T17:00:00",
     "summary": "Catatan harian 2026-03-06T17:00:00",
@@ -3861,6 +4583,62 @@ export const dailyMeta = [
     "title": "Nvidia GTC 2026: Era Baru Agen AI Otonom dan Ketegangan Global yang Meningkat",
     "date": "2026-03-17",
     "summary": "Catatan harian 2026-03-17",
+    "tags": [
+      "daily",
+      "ai",
+      "geopolitik",
+      "ekonomi",
+      "indonesia"
+    ]
+  },
+  {
+    "path": "./daily/2026-03-21.mdx",
+    "slug": "2026-03-21",
+    "title": "AI Daily Brief: WordPress Buka Pintu untuk Agen AI & Geopolitik Iran Memanas",
+    "date": "Sat Mar 21 2026 07:00:00 GMT+0700 (Western Indonesia Time)",
+    "summary": "Catatan harian Sat Mar 21 2026 07:00:00 GMT+0700 (Western Indonesia Time)",
+    "tags": [
+      "daily",
+      "ai",
+      "geopolitik",
+      "ekonomi",
+      "indonesia"
+    ]
+  },
+  {
+    "path": "./daily/2026-03-26.mdx",
+    "slug": "2026-03-26",
+    "title": "Daily Note: 2026-03-26",
+    "date": "2026-03-26T08:00:00",
+    "summary": "Catatan harian 2026-03-26T08:00:00",
+    "tags": [
+      "daily",
+      "ai",
+      "geopolitik",
+      "ekonomi",
+      "indonesia"
+    ]
+  },
+  {
+    "path": "./daily/2026-05-10.mdx",
+    "slug": "2026-05-10",
+    "title": "AI Daily Brief: Meta 'Miserable' & Gencatan Senjata Rusia-Ukraina",
+    "date": "2026-05-10",
+    "summary": "Catatan harian 2026-05-10",
+    "tags": [
+      "daily",
+      "ai",
+      "geopolitik",
+      "ekonomi",
+      "indonesia"
+    ]
+  },
+  {
+    "path": "./daily/2026-05-12.mdx",
+    "slug": "2026-05-12",
+    "title": "AI & Geopolitik Daily: OpenAI Deployment Co & Akademi AI BSD",
+    "date": "Tue May 12 2026 07:00:00 GMT+0700 (Western Indonesia Time)",
+    "summary": "Catatan harian Tue May 12 2026 07:00:00 GMT+0700 (Western Indonesia Time)",
     "tags": [
       "daily",
       "ai",

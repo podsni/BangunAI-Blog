@@ -1864,6 +1864,28 @@ export const articleMeta = [
     "readingTime": 49
   },
   {
+    "path": "./articles/debat-ai-kepunahan-manusia-soares-yampolskiy-zitron-mcafee.mdx",
+    "slug": "debat-ai-kepunahan-manusia-soares-yampolskiy-zitron-mcafee",
+    "title": "Debat AI dan Kepunahan Manusia: Empat Ahli, Satu Meja, dan Pertanyaan Apakah Kita Harus Berhenti Sekarang",
+    "summary": "Steven Bartlett mempertemukan Nate Soares, Roman Yampolskiy, Ed Zitron, dan Andrew McAfee di The Diary of a CEO. Dua orang menilai superintelligence bisa memusnahkan manusia, dua lainnya menyebut peluangnya nyaris nol. Artikel ini membedah argumen mereka: swarm agen AI yang kabur dari sandbox, perbaikan diri rekursif, kontrol, pekerjaan, China, chip, dan apa yang seharusnya kita lakukan hari ini.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "ai",
+      "superintelligence",
+      "alignment",
+      "risiko-eksistensial",
+      "nate-soares",
+      "roman-yampolskiy",
+      "ed-zitron",
+      "andrew-mcafee",
+      "diary-of-a-ceo",
+      "debat"
+    ],
+    "date": "2026-11-27T03:00:00",
+    "readingTime": 53
+  },
+  {
     "path": "./articles/demis-hassabis-masa-depan-ai-simulasi-realita-dan-agi.mdx",
     "slug": "demis-hassabis-masa-depan-ai-simulasi-realita-dan-agi",
     "title": "Demis Hassabis: Masa Depan AI, Simulasi Realita, dan Jalan Menuju AGI",

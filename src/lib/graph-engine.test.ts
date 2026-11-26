@@ -73,3 +73,65 @@ describe("buildPreviewGraph", () => {
     degree.forEach((count) => expect(count).toBeLessThanOrEqual(2));
   });
 });
+
+describe("sparsifyEdges", () => {
+  it("keeps the strongest links per node and always keeps direct links", async () => {
+    const { sparsifyEdges } = await import("@/lib/graph-engine");
+    const edges = [
+      { source: "a", target: "b", weight: 9, kind: "semantic" as const },
+      { source: "a", target: "c", weight: 5, kind: "semantic" as const },
+      { source: "a", target: "d", weight: 1, kind: "semantic" as const },
+      { source: "a", target: "e", weight: 1, kind: "direct" as const },
+      { source: "c", target: "d", weight: 2, kind: "semantic" as const },
+    ];
+    const kept = sparsifyEdges(edges, 1);
+    const keys = kept.map((e) => `${e.source}-${e.target}`);
+    expect(keys).toContain("a-b"); // top for a and b
+    expect(keys).toContain("a-e"); // direct links survive
+    expect(keys).toContain("c-d"); // top for d (and c's strongest is a-c)
+    expect(keys).toContain("a-c"); // top for c
+    expect(sparsifyEdges(edges, 0)).toHaveLength(edges.length);
+  });
+});
+
+describe("detectClusters", () => {
+  it("groups densely connected nodes and labels them by their common tag", async () => {
+    const { detectClusters } = await import("@/lib/graph-engine");
+    const nodes = [
+      { id: "a1", tags: ["ai"] },
+      { id: "a2", tags: ["ai"] },
+      { id: "a3", tags: ["ai", "coding"] },
+      { id: "b1", tags: ["filsafat"] },
+      { id: "b2", tags: ["filsafat"] },
+      { id: "solo", tags: [] },
+    ];
+    const edges = [
+      { source: "a1", target: "a2", weight: 5, kind: "semantic" as const },
+      { source: "a2", target: "a3", weight: 5, kind: "semantic" as const },
+      { source: "a1", target: "a3", weight: 5, kind: "semantic" as const },
+      { source: "b1", target: "b2", weight: 5, kind: "semantic" as const },
+      { source: "a3", target: "b1", weight: 1, kind: "semantic" as const },
+    ];
+    const { clusterOf, clusters } = detectClusters(nodes, edges);
+    expect(clusterOf.get("a1")).toBe(clusterOf.get("a2"));
+    expect(clusterOf.get("a1")).toBe(clusterOf.get("a3"));
+    expect(clusterOf.get("b1")).toBe(clusterOf.get("b2"));
+    expect(clusterOf.get("a1")).not.toBe(clusterOf.get("b1"));
+    expect(clusters[0].label).toBe("#ai");
+    expect(clusters[0].size).toBe(3);
+  });
+});
+
+describe("buildHybridGraph", () => {
+  it("caches the graph per post list", async () => {
+    const { buildHybridGraph } = await import("@/lib/graph-engine");
+    const posts = [
+      { slug: "x", title: "X", summary: "", type: "essay", category: "Tech", tags: ["t"], date: "2026-01-01", readingTime: 1 },
+      { slug: "y", title: "Y", summary: "", type: "note", category: "Tech", tags: ["t"], date: "2026-01-02", readingTime: 1 },
+    ] as Parameters<typeof buildHybridGraph>[0];
+    const first = buildHybridGraph(posts);
+    expect(buildHybridGraph(posts)).toBe(first);
+    expect(first.edges).toHaveLength(1);
+    expect(first.edges[0].kind).toBe("semantic");
+  });
+});

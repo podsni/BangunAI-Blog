@@ -7,7 +7,7 @@ interface MermaidDiagramProps {
 let mermaidIdCounter = 0;
 
 export function normalizeMermaidLineBreaks(chart: string) {
-  return chart.replaceAll("\\n", "<br/>");
+  return chart.split("\\n").join("<br/>");
 }
 
 function extractFillColor(el: Element | null): string | null {

@@ -77,7 +77,7 @@ function toReadMeta(
     url: item.url,
     tags: item.tags,
     date: item.date,
-    hasBody: item.hasBody ?? true,
+    hasBody: (item as { hasBody?: boolean }).hasBody ?? true,
     Component: getLazyMdxComponent(item.path, readModules),
   };
 }

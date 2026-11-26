@@ -1,62 +1,92 @@
-import { useMemo, useRef, useEffect, useState, useCallback } from "react";
-import { allPosts } from "@/content";
-import { buildHybridGraph, buildPreviewGraph, seededUnit, type GraphEdgeKind } from "@/lib/graph-engine";
+import { useMemo, useRef, useEffect, useState, useCallback, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronUp, Maximize2, ZoomIn, ZoomOut, RotateCcw, Focus } from "lucide-react";
+import { allPosts } from "@/content";
+import { buildHybridGraph, buildPreviewGraph, seededUnit } from "@/lib/graph-engine";
+import {
+  TYPE_LEGEND,
+  fitCamera,
+  hitTest,
+  radiusForDegree,
+  renderGraph,
+  stepSimulation,
+  useGraphTheme,
+  zoomAt,
+  type Camera,
+  type RenderLink,
+  type RenderNode,
+  type SimNode,
+} from "@/lib/graph-canvas";
 
-const MAX_GRAPH_DPR = 1.5;
+const MAX_GRAPH_DPR = 2;
+const MIN_SCALE = 0.25;
+const MAX_SCALE = 4;
 
-interface Node {
-  id: string;
-  label: string;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  type: string;
+interface LocalNode extends SimNode, RenderNode {
   slug: string;
-  pinned: boolean;
+  title: string;
+  type: string;
+  category: string;
 }
 
-interface Edge {
-  source: string;
-  target: string;
-  weight: number;
-  kind: GraphEdgeKind;
-}
+const postHref = (type: string, slug: string) => (type === "article" ? `/artikel/${slug}` : `/writing/${slug}`);
+const clampScale = (s: number) => Math.max(MIN_SCALE, Math.min(MAX_SCALE, s));
 
-interface Transform {
-  x: number;
-  y: number;
-  scale: number;
+function ControlBtn({ onClick, title, children }: { onClick: () => void; title: string; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="p-1.5 rounded-lg bg-background/90 border border-border/40 text-muted-foreground/80 hover:text-foreground hover:bg-background hover:border-border/70 transition-colors shadow-sm backdrop-blur-sm"
+      title={title}
+      aria-label={title}
+    >
+      {children}
+    </button>
+  );
 }
 
 export default function GraphView({ currentSlug }: { currentSlug?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-  const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
+  const theme = useGraphTheme();
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const transformRef = useRef<Transform>({ x: 0, y: 0, scale: 1 });
-  const isPanning = useRef(false);
-  const panStart = useRef({ x: 0, y: 0 });
-  const pointerStart = useRef({ x: 0, y: 0 });
-  const dragNode = useRef<Node | null>(null);
-  const dragMoved = useRef(false);
-  const dragWasPinned = useRef(false);
-  const sizeRef = useRef({ w: 500, h: 300 });
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [isInViewport, setIsInViewport] = useState(() => (typeof window === "undefined" ? true : false));
+  const [showWheelHint, setShowWheelHint] = useState(false);
+  const [isInViewport, setIsInViewport] = useState(() => typeof window === "undefined");
   const [isPageVisible, setIsPageVisible] = useState(
     () => (typeof document === "undefined" ? true : document.visibilityState !== "hidden")
   );
 
-  const lastTouchDist = useRef(0);
-  const lastTouchCenter = useRef({ x: 0, y: 0 });
-  const titleBySlug = useMemo(() => new Map(allPosts.map((post) => [post.slug, post.title])), []);
+  const camRef = useRef<Camera>({ x: 0, y: 0, scale: 1 });
+  const camTargetRef = useRef<Camera | null>(null);
+  const autoFitRef = useRef(true);
+  const sizeRef = useRef({ w: 0, h: 0 });
+  const alphaRef = useRef(1);
+  const dirtyRef = useRef(true);
+  const highlightTRef = useRef(0);
+  const themeRef = useRef(theme);
+  themeRef.current = theme;
+  const hoveredRef = useRef(hoveredId);
+  hoveredRef.current = hoveredId;
 
-  const { nodes, edges, neighbors } = useMemo(() => {
+  const pointer = useRef<{
+    mode: "none" | "pan" | "node";
+    index: number;
+    startX: number;
+    startY: number;
+    camX: number;
+    camY: number;
+    moved: boolean;
+    wasPinned: boolean;
+  }>({ mode: "none", index: -1, startX: 0, startY: 0, camX: 0, camY: 0, moved: false, wasPinned: false });
+  const touchTap = useRef<{ x: number; y: number; t: number; valid: boolean } | null>(null);
+  const pinch = useRef<{ dist: number } | null>(null);
+  const wheelHintTimer = useRef<number | undefined>(undefined);
+
+  const { nodes, links, neighbors, indexById } = useMemo(() => {
     const fullGraph = buildHybridGraph(allPosts);
     const graph = buildPreviewGraph(fullGraph, {
       focusId: currentSlug,
@@ -66,50 +96,68 @@ export default function GraphView({ currentSlug }: { currentSlug?: string }) {
       maxEdgesPerNode: 7,
       includeCategoryEdges: false,
     });
-    const nodeMap = new Map<string, Node>();
-    graph.nodes.forEach((node, i) => {
-      const angle = (i / graph.nodes.length) * Math.PI * 2 + seededUnit(`${node.id}:angle`) * 0.8;
-      const radius = 120 + seededUnit(`${node.id}:radius`) * 90;
-      nodeMap.set(node.slug, {
-        id: node.slug,
-        label: node.title.length > 22 ? node.title.slice(0, 22) + "…" : node.title,
-        x: 250 + Math.cos(angle) * radius,
-        y: 180 + Math.sin(angle) * radius,
+    const degree = new Map<string, number>();
+    graph.edges.forEach((e) => {
+      degree.set(e.source, (degree.get(e.source) ?? 0) + 1);
+      degree.set(e.target, (degree.get(e.target) ?? 0) + 1);
+    });
+    const maxDegree = Math.max(1, ...Array.from(degree.values()));
+    const count = Math.max(1, graph.nodes.length);
+    const list: LocalNode[] = graph.nodes.map((node, i) => {
+      const isCurrent = node.slug === currentSlug;
+      const angle = (i / count) * Math.PI * 2 + seededUnit(`${node.id}:angle`) * 0.8;
+      const r = isCurrent ? 0 : 70 + seededUnit(`${node.id}:radius`) * 110;
+      const d = degree.get(node.id) ?? 0;
+      return {
+        id: node.id,
+        slug: node.slug,
+        title: node.title,
+        label: node.title,
+        type: node.type,
+        category: node.category,
+        x: Math.cos(angle) * r,
+        y: Math.sin(angle) * r,
         vx: 0,
         vy: 0,
-        type: node.type,
-        slug: node.slug,
         pinned: false,
-      });
+        radius: isCurrent ? 10 : radiusForDegree(d, maxDegree, 3.5, 8),
+        importance: d,
+        color: [0, 0, 0],
+      };
     });
-
-    return { nodes: Array.from(nodeMap.values()), edges: graph.edges, neighbors: graph.neighbors };
+    const idx = new Map(list.map((n, i) => [n.id, i]));
+    const linkList: RenderLink[] = graph.edges
+      .filter((e) => idx.has(e.source) && idx.has(e.target))
+      .map((e) => ({ source: idx.get(e.source)!, target: idx.get(e.target)!, weight: e.weight, kind: e.kind }));
+    return { nodes: list, links: linkList, neighbors: graph.neighbors, indexById: idx };
   }, [currentSlug]);
 
   const nodesRef = useRef(nodes);
   nodesRef.current = nodes;
-  const hoveredRef = useRef(hoveredNode);
-  hoveredRef.current = hoveredNode;
 
-  const screenToCanvas = useCallback((sx: number, sy: number) => {
-    const t = transformRef.current;
-    return {
-      x: (sx - t.x) / t.scale,
-      y: (sy - t.y) / t.scale,
-    };
+  // Restart layout + auto-fit when the article changes.
+  useEffect(() => {
+    alphaRef.current = 1;
+    autoFitRef.current = true;
+    camTargetRef.current = null;
+    dirtyRef.current = true;
+  }, [nodes]);
+
+  // Theme colors are applied to nodes in place, then a redraw is requested.
+  useEffect(() => {
+    nodes.forEach((n) => {
+      n.color = theme.typeColors[n.type] ?? theme.fallback;
+    });
+    dirtyRef.current = true;
+  }, [nodes, theme]);
+
+  const markDirty = useCallback(() => {
+    dirtyRef.current = true;
   }, []);
 
-  const findNodeAt = useCallback((mx: number, my: number) => {
-    const { x, y } = screenToCanvas(mx, my);
-    const ns = nodesRef.current;
-    const hitRadius = 14 / transformRef.current.scale;
-    for (const n of ns) {
-      const dx = x - n.x;
-      const dy = y - n.y;
-      if (dx * dx + dy * dy < hitRadius * hitRadius) return n;
-    }
-    return null;
-  }, [screenToCanvas]);
+  useEffect(() => {
+    dirtyRef.current = true;
+  }, [hoveredId]);
 
   useEffect(() => {
     if (isCollapsed) return;
@@ -119,23 +167,16 @@ export default function GraphView({ currentSlug }: { currentSlug?: string }) {
       setIsInViewport(true);
       return;
     }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        setIsInViewport(Boolean(entry?.isIntersecting));
-      },
-      { threshold: 0.02 }
-    );
+    const observer = new IntersectionObserver(([entry]) => setIsInViewport(Boolean(entry?.isIntersecting)), {
+      threshold: 0.02,
+    });
     observer.observe(container);
     return () => observer.disconnect();
   }, [isCollapsed]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    const handleVisibility = () => {
-      setIsPageVisible(document.visibilityState !== "hidden");
-    };
+    const handleVisibility = () => setIsPageVisible(document.visibilityState !== "hidden");
     handleVisibility();
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
@@ -143,492 +184,393 @@ export default function GraphView({ currentSlug }: { currentSlug?: string }) {
 
   const isGraphActive = !isCollapsed && isInViewport && isPageVisible;
 
-  // HiDPI canvas resize
+  // HiDPI canvas sizing
   useEffect(() => {
     if (isCollapsed) return;
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
-
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, MAX_GRAPH_DPR);
       const rect = container.getBoundingClientRect();
-      const w = rect.width;
-      const h = rect.height;
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      canvas.style.width = w + "px";
-      canvas.style.height = h + "px";
-      sizeRef.current = { w, h };
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      sizeRef.current = { w: rect.width, h: rect.height };
+      if (autoFitRef.current) camTargetRef.current = null;
+      dirtyRef.current = true;
     };
-
     resize();
+    if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(resize);
     ro.observe(container);
     return () => ro.disconnect();
   }, [isCollapsed]);
 
-  // Force simulation + draw
+  // Simulation + render loop (only while visible on screen)
   useEffect(() => {
     if (!isGraphActive) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
 
-    let animId: number;
-    let lastFrameAt = 0;
-    const frameIntervalMs =
-      typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
-        ? 1000 / 40
-        : 1000 / 60;
+    let frame = 0;
+    let lastZoomShown = -1;
+    const simLinks = links;
 
-    const tick = (timestamp: number) => {
-      if (timestamp - lastFrameAt < frameIntervalMs) {
-        animId = requestAnimationFrame(tick);
+    const tick = () => {
+      const ns = nodesRef.current;
+      const { w: W, h: H } = sizeRef.current;
+      const hovered = hoveredRef.current;
+
+      if (alphaRef.current > 0.004) {
+        stepSimulation(ns, simLinks, {
+          repel: 900,
+          linkStrength: 0.012,
+          linkDistance: (w) => 105 - w * 4,
+          center: 0.006,
+          damping: 0.82,
+          maxSpeed: 6,
+          alpha: alphaRef.current,
+          draggedIndex: pointer.current.mode === "node" ? pointer.current.index : undefined,
+        });
+        alphaRef.current *= 0.982;
+        dirtyRef.current = true;
+      }
+
+      // Keep the whole neighbourhood in frame until the user takes the camera.
+      if (autoFitRef.current && W > 0) {
+        const fit = fitCamera(ns, W, H, { padding: 34, maxScale: 1.6, minScale: MIN_SCALE });
+        if (fit) camTargetRef.current = fit;
+      }
+      const target = camTargetRef.current;
+      if (target) {
+        const cam = camRef.current;
+        const k = 0.16;
+        const next = {
+          x: cam.x + (target.x - cam.x) * k,
+          y: cam.y + (target.y - cam.y) * k,
+          scale: cam.scale + (target.scale - cam.scale) * k,
+        };
+        const done =
+          Math.abs(next.x - target.x) < 0.3 && Math.abs(next.y - target.y) < 0.3 && Math.abs(next.scale - target.scale) < 0.002;
+        camRef.current = done ? target : next;
+        if (done && !autoFitRef.current) camTargetRef.current = null;
+        if (!done) dirtyRef.current = true;
+      }
+
+      const wantT = hovered || currentSlug ? 1 : 0;
+      if (Math.abs(highlightTRef.current - wantT) > 0.01) {
+        highlightTRef.current += (wantT - highlightTRef.current) * 0.2;
+        dirtyRef.current = true;
+      } else {
+        highlightTRef.current = wantT;
+      }
+
+      if (dirtyRef.current && W > 0) {
+        dirtyRef.current = false;
+        const anchor = hovered ?? currentSlug ?? null;
+        let highlightIds: Set<string> | null = null;
+        if (anchor) {
+          highlightIds = new Set([anchor, ...(neighbors.get(anchor) ?? [])]);
+          if (currentSlug) highlightIds.add(currentSlug);
+        }
+        renderGraph(ctx, {
+          W,
+          H,
+          dpr: Math.min(window.devicePixelRatio || 1, MAX_GRAPH_DPR),
+          camera: camRef.current,
+          theme: themeRef.current,
+          nodes: ns,
+          links: simLinks,
+          focusId: currentSlug,
+          hoverId: hovered,
+          highlightIds,
+          highlightT: highlightTRef.current,
+          labelScale: 2.2,
+          maxLabelChars: 26,
+          dimStrength: 0.62,
+        });
+        const z = Math.round(camRef.current.scale * 100);
+        if (z !== lastZoomShown) {
+          lastZoomShown = z;
+          setZoomLevel(z);
+        }
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [links, neighbors, currentSlug, isGraphActive]);
+
+  const getPos = useCallback((clientX: number, clientY: number) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    return rect ? { mx: clientX - rect.left, my: clientY - rect.top } : { mx: 0, my: 0 };
+  }, []);
+
+  const nodeAt = useCallback(
+    (mx: number, my: number, slop = 6) => {
+      const { w, h } = sizeRef.current;
+      return hitTest(nodesRef.current, camRef.current, w, h, mx, my, slop);
+    },
+    []
+  );
+
+  const takeCamera = useCallback(() => {
+    autoFitRef.current = false;
+    camTargetRef.current = null;
+  }, []);
+
+  const setCamera = useCallback((cam: Camera) => {
+    camRef.current = cam;
+    dirtyRef.current = true;
+  }, []);
+
+  const animateCamera = useCallback((cam: Camera) => {
+    camTargetRef.current = cam;
+    dirtyRef.current = true;
+  }, []);
+
+  // Wheel: Ctrl/⌘ + wheel (and trackpad pinch) zooms; plain wheel keeps scrolling the article.
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || isCollapsed) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) {
+        setShowWheelHint(true);
+        window.clearTimeout(wheelHintTimer.current);
+        wheelHintTimer.current = window.setTimeout(() => setShowWheelHint(false), 1400);
         return;
       }
-      lastFrameAt = timestamp;
-
-      const ns = nodesRef.current;
-      const t = transformRef.current;
-      const dpr = Math.min(window.devicePixelRatio || 1, MAX_GRAPH_DPR);
-      const W = sizeRef.current.w;
-      const H = sizeRef.current.h;
-      const hovered = hoveredRef.current;
-      const nodeById = new Map(ns.map((n) => [n.id, n]));
-
-      // Physics
-      for (let i = 0; i < ns.length; i++) {
-        for (let j = i + 1; j < ns.length; j++) {
-          const dx = ns[j].x - ns[i].x;
-          const dy = ns[j].y - ns[i].y;
-          const dist = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
-          const force = 800 / (dist * dist);
-          const fx = (dx / dist) * force;
-          const fy = (dy / dist) * force;
-          if (dragNode.current?.id !== ns[i].id) { ns[i].vx -= fx; ns[i].vy -= fy; }
-          if (dragNode.current?.id !== ns[j].id) { ns[j].vx += fx; ns[j].vy += fy; }
-        }
-      }
-
-      edges.forEach((e) => {
-        const s = nodeById.get(e.source);
-        const t2 = nodeById.get(e.target);
-        if (!s || !t2) return;
-        const dx = t2.x - s.x;
-        const dy = t2.y - s.y;
-        const dist = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
-        const force = (dist - (140 - e.weight * 6)) * 0.0035;
-        if (dragNode.current?.id !== s.id) { s.vx += (dx / dist) * force; s.vy += (dy / dist) * force; }
-        if (dragNode.current?.id !== t2.id) { t2.vx -= (dx / dist) * force; t2.vy -= (dy / dist) * force; }
-      });
-
-      ns.forEach((n) => {
-        if (n.pinned || dragNode.current?.id === n.id) return;
-        n.vx += (W / 2 - n.x) * 0.001;
-        n.vy += (H / 2 - n.y) * 0.001;
-        n.vx *= 0.9;
-        n.vy *= 0.9;
-        const speed = Math.hypot(n.vx, n.vy);
-        const maxSpeed = 3.6;
-        if (speed > maxSpeed) {
-          n.vx = (n.vx / speed) * maxSpeed;
-          n.vy = (n.vy / speed) * maxSpeed;
-        }
-        n.x += n.vx;
-        n.y += n.vy;
-
-        const dxC = n.x - W / 2;
-        const dyC = n.y - H / 2;
-        const radius = Math.hypot(dxC, dyC);
-        const maxRadius = Math.min(W, H) * 0.52;
-        if (radius > maxRadius) {
-          const pull = (radius - maxRadius) * 0.15;
-          n.x -= (dxC / radius) * pull;
-          n.y -= (dyC / radius) * pull;
-        }
-      });
-
-      // Draw
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, W, H);
-
-      // Subtle background pattern
-      ctx.fillStyle = "rgba(100,116,139,0.015)";
-      const gridSize = Math.max(14, 30 * t.scale);
-      const offX = t.x % gridSize;
-      const offY = t.y % gridSize;
-      for (let gx = offX - gridSize; gx < W + gridSize; gx += gridSize) {
-        for (let gy = offY - gridSize; gy < H + gridSize; gy += gridSize) {
-          ctx.fillRect(gx, gy, 1, 1);
-        }
-      }
-
-      ctx.save();
-      ctx.translate(t.x, t.y);
-      ctx.scale(t.scale, t.scale);
-
-      // Connected edges set
-      const connectedEdges = new Set<string>();
-      if (currentSlug || hovered) {
-        const activeId = currentSlug || hovered;
-        if (activeId) neighbors.get(activeId)?.forEach((id) => connectedEdges.add(id));
-      }
-
-      // Edges
-      edges.forEach((e) => {
-        const s = nodeById.get(e.source);
-        const t2 = nodeById.get(e.target);
-        if (!s || !t2) return;
-        const isActive = s.id === currentSlug || t2.id === currentSlug;
-        const isHoverEdge = s.id === hovered || t2.id === hovered;
-        const kindTint = e.kind === "direct" ? 1 : e.kind === "semantic" ? 0.7 : 0.45;
-
-        ctx.beginPath();
-        ctx.moveTo(s.x, s.y);
-        ctx.lineTo(t2.x, t2.y);
-        const dimEdge = (currentSlug || hovered) && !isActive && !isHoverEdge;
-        ctx.globalAlpha = dimEdge ? 0.2 : 1;
-        ctx.strokeStyle = isActive
-          ? "rgba(217,119,6,0.6)"
-          : isHoverEdge
-            ? "rgba(148,163,184,0.38)"
-            : `rgba(100,116,139,${0.07 + e.weight * 0.03 + kindTint * 0.025})`;
-        ctx.lineWidth = (isActive ? 2.2 + e.weight * 0.2 : isHoverEdge ? 1.3 + e.weight * 0.12 : 0.5 + e.weight * 0.07) / t.scale;
-        ctx.stroke();
-        ctx.globalAlpha = 1;
-      });
-
-      // Nodes
-      const colors: Record<string, string> = {
-        note: "#38bdf8",
-        essay: "#a78bfa",
-        article: "#fbbf24",
-      };
-
-      ns.forEach((n) => {
-        const isCurrent = n.id === currentSlug;
-        const isHovered = n.id === hovered;
-        const isConnected = connectedEdges.has(n.id);
-        const isDimmed = (currentSlug || hovered) && !isCurrent && !isHovered && !isConnected;
-        const radius = isCurrent ? 9 : isHovered ? 7.5 : isConnected ? 5.5 : 4;
-        const color = colors[n.type] || "#64748b";
-
-        // Outer glow for active/hovered nodes
-        if (isCurrent || isHovered) {
-          const glowRadius = radius + 16;
-          const grad = ctx.createRadialGradient(n.x, n.y, radius * 0.5, n.x, n.y, glowRadius);
-          const glowColor = isCurrent ? "217,119,6" : "148,163,184";
-          grad.addColorStop(0, `rgba(${glowColor},0.3)`);
-          grad.addColorStop(0.5, `rgba(${glowColor},0.1)`);
-          grad.addColorStop(1, `rgba(${glowColor},0)`);
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, glowRadius, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
-        }
-
-        // Node circle
-        ctx.globalAlpha = isDimmed ? 0.25 : 1;
-        const nodeGrad = ctx.createRadialGradient(n.x - radius * 0.3, n.y - radius * 0.3, 0, n.x, n.y, radius);
-        nodeGrad.addColorStop(0, isCurrent ? "#fcd34d" : color);
-        nodeGrad.addColorStop(1, isCurrent ? "#d97706" : color);
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = nodeGrad;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-
-        // Ring for current
-        if (isCurrent) {
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, radius + 4, 0, Math.PI * 2);
-          ctx.strokeStyle = "rgba(217,119,6,0.45)";
-          ctx.lineWidth = 1.5 / t.scale;
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, radius + 7, 0, Math.PI * 2);
-          ctx.strokeStyle = "rgba(217,119,6,0.15)";
-          ctx.lineWidth = 1 / t.scale;
-          ctx.stroke();
-        }
-
-        // Labels — show for current, hovered, and connected nodes
-        const showLabel = isCurrent || isHovered || isConnected;
-        if (showLabel) {
-          const fontSize = Math.max(9, (isCurrent ? 11.5 : 10) / t.scale);
-          ctx.font = `${isCurrent ? "700" : "500"} ${fontSize}px 'Space Grotesk', system-ui, sans-serif`;
-          ctx.textAlign = "center";
-          const text = n.label;
-          const tw = ctx.measureText(text).width;
-          const pad = 5;
-          const lh = fontSize + 5;
-          const ly = n.y - radius - lh - 3;
-
-          ctx.globalAlpha = isConnected && !isHovered && !isCurrent ? 0.65 : 1;
-
-          // Label background
-          ctx.fillStyle = "rgba(10,15,28,0.88)";
-          ctx.beginPath();
-          ctx.roundRect(n.x - tw / 2 - pad, ly, tw + pad * 2, lh, 4);
-          ctx.fill();
-          ctx.strokeStyle = isCurrent ? "rgba(217,119,6,0.3)" : "rgba(100,116,139,0.12)";
-          ctx.lineWidth = 0.5 / t.scale;
-          ctx.stroke();
-
-          // Label text
-          ctx.fillStyle = isCurrent
-            ? "rgba(253,211,77,0.95)"
-            : isHovered
-              ? "rgba(226,232,240,0.95)"
-              : "rgba(148,163,184,0.85)";
-          ctx.fillText(text, n.x, ly + lh - 4);
-          ctx.globalAlpha = 1;
-        }
-      });
-
-      ctx.restore();
-      animId = requestAnimationFrame(tick);
-    };
-
-    animId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animId);
-  }, [edges, neighbors, currentSlug, isGraphActive]);
-
-  // Mouse handlers
-  const getCanvasPos = useCallback((clientX: number, clientY: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return { mx: 0, my: 0 };
-    const rect = canvas.getBoundingClientRect();
-    return { mx: clientX - rect.left, my: clientY - rect.top };
-  }, []);
-
-  const handlePointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
-    const { mx, my } = getCanvasPos(e.clientX, e.clientY);
-    const node = findNodeAt(mx, my);
-    dragMoved.current = false;
-    pointerStart.current = { x: e.clientX, y: e.clientY };
-    if (node) {
-      dragWasPinned.current = node.pinned;
-      dragNode.current = node;
-    } else {
-      isPanning.current = true;
-      panStart.current = { x: e.clientX - transformRef.current.x, y: e.clientY - transformRef.current.y };
-    }
-    const target = e.target as HTMLElement;
-    if (target.setPointerCapture) {
-      target.setPointerCapture(e.pointerId);
-    }
-  }, [findNodeAt, getCanvasPos]);
-
-  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
-    const { mx, my } = getCanvasPos(e.clientX, e.clientY);
-
-    if (dragNode.current) {
-      if (
-        Math.abs(e.clientX - pointerStart.current.x) > 2 ||
-        Math.abs(e.clientY - pointerStart.current.y) > 2
-      ) {
-        dragMoved.current = true;
-      }
-      const { x, y } = screenToCanvas(mx, my);
-      dragNode.current.x = x;
-      dragNode.current.y = y;
-      dragNode.current.vx = 0;
-      dragNode.current.vy = 0;
-      if (dragMoved.current) dragNode.current.pinned = true;
-      return;
-    }
-
-    if (isPanning.current) {
-      dragMoved.current = true;
-      transformRef.current = {
-        ...transformRef.current,
-        x: e.clientX - panStart.current.x,
-        y: e.clientY - panStart.current.y,
-      };
-      return;
-    }
-
-    const node = findNodeAt(mx, my);
-    setHoveredNode(node?.id || null);
-    setHoveredLabel(node ? titleBySlug.get(node.id) || node.label : null);
-    const canvas = canvasRef.current;
-    if (canvas) canvas.style.cursor = node ? "pointer" : "grab";
-  }, [findNodeAt, screenToCanvas, getCanvasPos, titleBySlug]);
-
-  const handlePointerUp = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
-    if (dragNode.current && !dragMoved.current) {
-      dragNode.current.pinned = dragWasPinned.current;
-      const node = dragNode.current;
-      const href = node.type === "article" ? `/artikel/${node.slug}` : `/writing/${node.slug}`;
-      navigate(href);
-    }
-    dragNode.current = null;
-    isPanning.current = false;
-  }, [navigate]);
-
-  const handleWheel = useCallback((e: React.WheelEvent<HTMLCanvasElement>) => {
-    e.preventDefault();
-    const { mx, my } = getCanvasPos(e.clientX, e.clientY);
-    const delta = e.deltaY > 0 ? 0.92 : 1.08;
-    const t = transformRef.current;
-    const newScale = Math.max(0.2, Math.min(4, t.scale * delta));
-    transformRef.current = {
-      x: mx - (mx - t.x) * (newScale / t.scale),
-      y: my - (my - t.y) * (newScale / t.scale),
-      scale: newScale,
-    };
-    setZoomLevel(Math.round(newScale * 100));
-  }, [getCanvasPos]);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
-    if (e.touches.length === 2) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      lastTouchDist.current = Math.sqrt(dx * dx + dy * dy);
-      lastTouchCenter.current = {
-        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-        y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
-      };
-    }
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
-    if (e.touches.length === 2) {
       e.preventDefault();
+      takeCamera();
+      const { mx, my } = getPos(e.clientX, e.clientY);
+      const { w, h } = sizeRef.current;
+      const factor = Math.exp(-e.deltaY * 0.0025);
+      setCamera(zoomAt(camRef.current, w, h, mx, my, clampScale(camRef.current.scale * factor)));
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        pinch.current = { dist: Math.hypot(dx, dy) };
+        if (touchTap.current) touchTap.current.valid = false;
+      }
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length !== 2 || !pinch.current) return;
+      e.preventDefault();
+      takeCamera();
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const scale = dist / lastTouchDist.current;
-      lastTouchDist.current = dist;
-
-      const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-      const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-      const { mx, my } = getCanvasPos(cx, cy);
-
-      const t = transformRef.current;
-      const newScale = Math.max(0.2, Math.min(4, t.scale * scale));
-      transformRef.current = {
-        x: mx - (mx - t.x) * (newScale / t.scale),
-        y: my - (my - t.y) * (newScale / t.scale),
-        scale: newScale,
-      };
-      setZoomLevel(Math.round(newScale * 100));
-    }
-  }, [getCanvasPos]);
-
-  // Fit all nodes in view
-  const fitToContent = useCallback(() => {
-    const ns = nodesRef.current;
-    if (ns.length === 0) return;
-    const { w, h } = sizeRef.current;
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    ns.forEach((n) => {
-      minX = Math.min(minX, n.x);
-      maxX = Math.max(maxX, n.x);
-      minY = Math.min(minY, n.y);
-      maxY = Math.max(maxY, n.y);
-    });
-    const padding = 60;
-    const contentW = maxX - minX + padding * 2;
-    const contentH = maxY - minY + padding * 2;
-    const scale = Math.min(w / contentW, h / contentH, 2);
-    const centerX = (minX + maxX) / 2;
-    const centerY = (minY + maxY) / 2;
-    transformRef.current = {
-      x: w / 2 - centerX * scale,
-      y: h / 2 - centerY * scale,
-      scale,
+      const dist = Math.hypot(dx, dy);
+      const { mx, my } = getPos(
+        (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        (e.touches[0].clientY + e.touches[1].clientY) / 2
+      );
+      const { w, h } = sizeRef.current;
+      setCamera(zoomAt(camRef.current, w, h, mx, my, clampScale(camRef.current.scale * (dist / pinch.current.dist))));
+      pinch.current.dist = dist;
     };
-    setZoomLevel(Math.round(scale * 100));
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) pinch.current = null;
+    };
+    canvas.addEventListener("wheel", onWheel, { passive: false });
+    canvas.addEventListener("touchstart", onTouchStart, { passive: true });
+    canvas.addEventListener("touchmove", onTouchMove, { passive: false });
+    canvas.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      canvas.removeEventListener("wheel", onWheel);
+      canvas.removeEventListener("touchstart", onTouchStart);
+      canvas.removeEventListener("touchmove", onTouchMove);
+      canvas.removeEventListener("touchend", onTouchEnd);
+      window.clearTimeout(wheelHintTimer.current);
+    };
+  }, [isCollapsed, getPos, setCamera, takeCamera]);
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if (e.pointerType === "touch") {
+        // Touch: never capture, so one-finger vertical scrolling keeps working.
+        touchTap.current = { x: e.clientX, y: e.clientY, t: Date.now(), valid: e.isPrimary };
+        return;
+      }
+      if (e.button !== 0) return;
+      const { mx, my } = getPos(e.clientX, e.clientY);
+      const index = nodeAt(mx, my);
+      const p = pointer.current;
+      p.startX = e.clientX;
+      p.startY = e.clientY;
+      p.moved = false;
+      p.index = index;
+      p.camX = camRef.current.x;
+      p.camY = camRef.current.y;
+      if (index >= 0) {
+        p.mode = "node";
+        p.wasPinned = nodesRef.current[index].pinned;
+      } else {
+        p.mode = "pan";
+      }
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+    },
+    [getPos, nodeAt]
+  );
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if (e.pointerType === "touch") {
+        const tap = touchTap.current;
+        if (tap && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > 10) tap.valid = false;
+        return;
+      }
+      const p = pointer.current;
+      const { mx, my } = getPos(e.clientX, e.clientY);
+      if (p.mode !== "none" && Math.hypot(e.clientX - p.startX, e.clientY - p.startY) > 3) p.moved = true;
+
+      if (p.mode === "node" && p.moved) {
+        const node = nodesRef.current[p.index];
+        const cam = camRef.current;
+        const { w, h } = sizeRef.current;
+        node.x = (mx - w / 2 - cam.x) / cam.scale;
+        node.y = (my - h / 2 - cam.y) / cam.scale;
+        node.pinned = true;
+        alphaRef.current = Math.max(alphaRef.current, 0.35);
+        takeCamera();
+        markDirty();
+        return;
+      }
+      if (p.mode === "pan") {
+        if (p.moved) {
+          takeCamera();
+          setCamera({ ...camRef.current, x: p.camX + (e.clientX - p.startX), y: p.camY + (e.clientY - p.startY) });
+        }
+        return;
+      }
+      const index = nodeAt(mx, my);
+      const id = index >= 0 ? nodesRef.current[index].id : null;
+      if (id !== hoveredRef.current) setHoveredId(id);
+      e.currentTarget.style.cursor = index >= 0 ? "pointer" : "grab";
+    },
+    [getPos, nodeAt, markDirty, setCamera, takeCamera]
+  );
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if (e.pointerType === "touch") {
+        const tap = touchTap.current;
+        touchTap.current = null;
+        if (!tap || !tap.valid || Date.now() - tap.t > 600 || pinch.current) return;
+        const { mx, my } = getPos(e.clientX, e.clientY);
+        const index = nodeAt(mx, my, 14);
+        if (index >= 0) navigate(postHref(nodesRef.current[index].type, nodesRef.current[index].slug));
+        return;
+      }
+      const p = pointer.current;
+      if (p.mode === "node" && !p.moved && p.index >= 0) {
+        const node = nodesRef.current[p.index];
+        node.pinned = p.wasPinned;
+        navigate(postHref(node.type, node.slug));
+      }
+      p.mode = "none";
+      p.index = -1;
+    },
+    [getPos, nodeAt, navigate]
+  );
+
+  const handlePointerLeave = useCallback(() => {
+    if (pointer.current.mode === "none") setHoveredId(null);
   }, []);
+
+  const zoomBy = useCallback(
+    (factor: number) => {
+      takeCamera();
+      const { w, h } = sizeRef.current;
+      const base = camTargetRef.current ?? camRef.current;
+      animateCamera(zoomAt(base, w, h, w / 2, h / 2, clampScale(base.scale * factor)));
+    },
+    [animateCamera, takeCamera]
+  );
+
+  const fitToContent = useCallback(() => {
+    const { w, h } = sizeRef.current;
+    const fit = fitCamera(nodesRef.current, w, h, { padding: 34, maxScale: 1.6, minScale: MIN_SCALE });
+    if (!fit) return;
+    autoFitRef.current = false;
+    animateCamera(fit);
+  }, [animateCamera]);
 
   const resetView = useCallback(() => {
     nodesRef.current.forEach((n) => {
       n.pinned = false;
     });
-    transformRef.current = { x: 0, y: 0, scale: 1 };
-    setZoomLevel(100);
-  }, []);
+    alphaRef.current = 0.8;
+    autoFitRef.current = true;
+    camTargetRef.current = null;
+    markDirty();
+  }, [markDirty]);
 
-  const zoomBy = useCallback((factor: number) => {
-    const t = transformRef.current;
-    const { w, h } = sizeRef.current;
-    const cx = w / 2, cy = h / 2;
-    const newScale = Math.max(0.2, Math.min(4, t.scale * factor));
-    transformRef.current = {
-      x: cx - (cx - t.x) * (newScale / t.scale),
-      y: cy - (cy - t.y) * (newScale / t.scale),
-      scale: newScale,
-    };
-    setZoomLevel(Math.round(newScale * 100));
-  }, []);
-
-  const ControlBtn = ({ onClick, title, children }: { onClick: () => void; title: string; children: React.ReactNode }) => (
-    <button
-      onClick={onClick}
-      className="p-1.5 rounded-lg bg-background/90 border border-border/40 text-muted-foreground/70 hover:text-foreground hover:bg-background hover:border-border/60 transition-all shadow-sm backdrop-blur-sm"
-      title={title}
-    >
-      {children}
-    </button>
-  );
+  const hovered = hoveredId ? nodes[indexById.get(hoveredId) ?? -1] : undefined;
+  const legend = theme.isLight ? TYPE_LEGEND.light : TYPE_LEGEND.dark;
+  const fullPageHref = currentSlug ? `/graph?focus=${encodeURIComponent(currentSlug)}` : "/graph";
 
   return (
     <div className="rounded-xl border border-border/40 bg-secondary/20 overflow-hidden">
-      {/* Header */}
       <button
+        type="button"
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="w-full px-4 py-2.5 border-b border-border/30 flex items-center justify-between hover:bg-secondary/30 transition-colors"
+        aria-expanded={!isCollapsed}
+        className="w-full px-4 py-2.5 border-b border-border/30 flex items-center justify-between gap-3 hover:bg-secondary/30 transition-colors"
       >
-        <span className="text-xs uppercase tracking-widest text-muted-foreground/50 font-heading">Graph View</span>
+        <span className="text-xs uppercase tracking-widest text-muted-foreground/60 font-heading">Graph View</span>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-3 text-[10px] text-muted-foreground/40">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#38bdf8]" /> Note</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#a78bfa]" /> Essay</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#fbbf24]" /> Article</span>
+          <div className="flex items-center gap-2.5 sm:gap-3 text-[10px] text-muted-foreground/70">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: legend.note }} /> Note</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: legend.essay }} /> Essay</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: legend.article }} /> Article</span>
           </div>
-          {isCollapsed ? <ChevronDown size={14} className="text-muted-foreground/40" /> : <ChevronUp size={14} className="text-muted-foreground/40" />}
+          {isCollapsed ? <ChevronDown size={14} className="text-muted-foreground/50" /> : <ChevronUp size={14} className="text-muted-foreground/50" />}
         </div>
       </button>
 
-      {/* Canvas */}
       {!isCollapsed && (
         <div ref={containerRef} className="relative h-[340px] sm:h-[420px]">
           <canvas
             ref={canvasRef}
-            className="w-full h-full touch-pan-y"
+            role="img"
+            aria-label={`Graph koneksi tulisan: ${nodes.length} tulisan, ${links.length} koneksi`}
+            className="block w-full h-full touch-pan-y select-none"
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
-            onPointerLeave={() => { isPanning.current = false; dragNode.current = null; setHoveredNode(null); setHoveredLabel(null); }}
-            onWheel={handleWheel}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
+            onPointerCancel={handlePointerUp}
+            onPointerLeave={handlePointerLeave}
           />
-          {/* Hovered node tooltip */}
-          {hoveredLabel && (
+          {hovered && (
             <div className="absolute top-3 left-3 right-16 pointer-events-none">
-              <span className="inline-block max-w-full text-xs text-foreground/80 bg-background/85 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-border/30 truncate shadow-sm">
-                {hoveredLabel}
-              </span>
+              <div className="inline-flex max-w-full flex-col gap-0.5 bg-background/90 backdrop-blur-sm px-2.5 py-1.5 rounded-lg border border-border/40 shadow-sm">
+                <span className="text-xs font-medium text-foreground truncate">{hovered.title}</span>
+                <span className="text-[10px] text-muted-foreground/70 capitalize">
+                  {hovered.type} · {hovered.category} · {neighbors.get(hovered.id)?.size ?? 0} koneksi
+                </span>
+              </div>
             </div>
           )}
-          {/* Controls */}
-          <div className="absolute bottom-3 right-3 flex flex-col gap-1">
-            <ControlBtn onClick={() => zoomBy(1.4)} title="Zoom in"><ZoomIn size={14} /></ControlBtn>
-            <ControlBtn onClick={() => zoomBy(0.7)} title="Zoom out"><ZoomOut size={14} /></ControlBtn>
-            <ControlBtn onClick={fitToContent} title="Fit all nodes"><Focus size={14} /></ControlBtn>
-            <ControlBtn onClick={resetView} title="Reset view"><RotateCcw size={14} /></ControlBtn>
-            <ControlBtn onClick={() => navigate("/graph")} title="Full page"><Maximize2 size={14} /></ControlBtn>
+          <div
+            className={`pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center transition-opacity duration-300 ${showWheelHint ? "opacity-100" : "opacity-0"}`}
+            aria-hidden
+          >
+            <span className="text-xs text-foreground/80 bg-background/85 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/40 shadow-sm">
+              Tahan Ctrl / ⌘ + scroll untuk zoom
+            </span>
           </div>
-          {/* Zoom indicator */}
-          <span className="absolute bottom-3 left-3 text-[10px] text-muted-foreground/40 bg-background/70 px-2 py-0.5 rounded-md backdrop-blur-sm border border-border/20">
+          <div className="absolute bottom-3 right-3 flex flex-col gap-1">
+            <ControlBtn onClick={() => zoomBy(1.35)} title="Zoom in"><ZoomIn size={14} /></ControlBtn>
+            <ControlBtn onClick={() => zoomBy(1 / 1.35)} title="Zoom out"><ZoomOut size={14} /></ControlBtn>
+            <ControlBtn onClick={fitToContent} title="Muat semua node"><Focus size={14} /></ControlBtn>
+            <ControlBtn onClick={resetView} title="Reset tata letak"><RotateCcw size={14} /></ControlBtn>
+            <ControlBtn onClick={() => navigate(fullPageHref)} title="Buka graph penuh"><Maximize2 size={14} /></ControlBtn>
+          </div>
+          <span className="absolute bottom-3 left-3 text-[10px] text-muted-foreground/60 bg-background/70 px-2 py-0.5 rounded-md backdrop-blur-sm border border-border/30 tabular-nums">
             {zoomLevel}%
           </span>
         </div>

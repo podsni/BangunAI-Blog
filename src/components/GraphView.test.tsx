@@ -125,6 +125,7 @@ const createContextStub = () => {
     roundRect: vi.fn(),
     measureText: vi.fn(() => ({ width: 48 })),
     fillText: vi.fn(),
+    strokeText: vi.fn(),
     createRadialGradient: vi.fn(() => gradient),
     strokeStyle: "",
     fillStyle: "",
@@ -133,6 +134,8 @@ const createContextStub = () => {
     lineCap: "round",
     textAlign: "center",
     font: "12px sans-serif",
+    lineJoin: "round",
+    textBaseline: "top",
   };
 };
 

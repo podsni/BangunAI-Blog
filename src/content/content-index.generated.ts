@@ -2264,6 +2264,28 @@ export const articleMeta = [
     "readingTime": 55
   },
   {
+    "path": "./articles/harari-suleyman-menciptakan-dewa-yang-jadi-budak-ai-kesadaran-dan-masa-depan-manusia.mdx",
+    "slug": "harari-suleyman-menciptakan-dewa-yang-jadi-budak-ai-kesadaran-dan-masa-depan-manusia",
+    "title": "Harari × Suleyman: Kita Menciptakan Dewa dan Berharap Mereka Jadi Budak — AI, Kesadaran, dan Masa Depan Manusia",
+    "summary": "Seorang sejarawan dan seorang pembangun AI duduk berhadapan. Yuval Noah Harari dan Mustafa Suleyman membahas 'sekat otak-perut', kelimpahan untuk siapa, sinyal kebenaran, superintelligence humanis, AI yang tampak sadar, pacar AI, deepfake, dan mengapa umat manusia terlalu 'excited' untuk bisa berpikir jernih.",
+    "type": "article",
+    "category": "Refleksi",
+    "tags": [
+      "yuval-harari",
+      "mustafa-suleyman",
+      "ai",
+      "superintelligence",
+      "kesadaran",
+      "alignment",
+      "filsafat",
+      "media-sosial",
+      "humanisme",
+      "masa-depan"
+    ],
+    "date": "2026-11-27T02:00:00",
+    "readingTime": 42
+  },
+  {
     "path": "./articles/harvard-thinking-bagaimana-bercerita-dengan-kuat-seni-menulis-storytelling-dan-keberanian-gagal.mdx",
     "slug": "harvard-thinking-bagaimana-bercerita-dengan-kuat-seni-menulis-storytelling-dan-keberanian-gagal",
     "title": "Harvard Thinking: Bagaimana Bercerita dengan Kuat, Menulis dengan Jiwa, dan Berani Gagal",
